@@ -131,10 +131,11 @@ canvas#game.grab{cursor:none}canvas#game.point{cursor:pointer}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 html,body{overscroll-behavior:none}
 /* touch controls: a thumbstick to steer the lure and a DASH button to strike */
-#stick{position:absolute;left:max(24px,env(safe-area-inset-left));bottom:24px;width:136px;height:136px;border-radius:50%;background:rgba(9,16,21,.45);border:2px solid rgba(255,255,255,.28);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);touch-action:none;z-index:1}
+#stick{position:absolute;right:max(24px,env(safe-area-inset-right));bottom:24px;width:136px;height:136px;border-radius:50%;background:rgba(9,16,21,.45);border:2px solid rgba(255,255,255,.28);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);touch-action:none;z-index:1}
 #stick::after{content:"";position:absolute;inset:30%;border-radius:50%;border:1px dashed rgba(255,255,255,.18)}
 #stickKnob{position:absolute;left:50%;top:50%;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;background:rgba(232,238,241,.88);box-shadow:0 4px 12px rgba(0,0,0,.45);pointer-events:none}
-#dashBtn{position:absolute;right:max(24px,env(safe-area-inset-right));bottom:132px;width:80px;height:80px;border-radius:50%;border:3px solid var(--accent);background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:.06em;touch-action:none;z-index:1;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+#dashBtn{position:absolute;left:max(24px,env(safe-area-inset-left));bottom:132px;width:80px;height:80px;border-radius:50%;border:3px solid var(--accent);background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:.06em;touch-action:none;z-index:1;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+#actionBtn.lefty{right:auto;left:max(16px,env(safe-area-inset-left))}
 #dashBtn.on{background:var(--accent);color:var(--accent-ink)}
 #dashBtn.cool{opacity:.5}
 @media (pointer:coarse){
@@ -148,7 +149,7 @@ html,body{overscroll-behavior:none}
  #wxPill .tm{display:none}
  #toolbar button{font-size:11px}
  #hint{font-size:14px;top:50px}
- #actionBtn{width:84px;height:84px;font-size:19px;right:10px;bottom:10px}
+ #actionBtn{width:84px;height:84px;font-size:19px;right:10px;bottom:10px}#actionBtn.lefty{left:10px}#dashBtn{bottom:110px}
  #pullBox{left:10px;bottom:10px}#pullBox button{width:68px;height:68px;font-size:24px}
  .panel h2{font-size:24px}
  .gearRow{grid-template-columns:1fr}.gearRow .act{grid-row:auto;grid-column:1;align-items:stretch}
@@ -1500,7 +1501,7 @@ function updateUI(){
  const busy=G.state==='reeling'||G.state==='landing';
  $('toolbar').classList.toggle('disabled',busy||G.state==='sailing');
  $('pullBox').classList.toggle('hidden',G.state!=='reeling');
- $('stick').classList.toggle('hidden',!(touchish&&G.state==='lure'));$('dashBtn').classList.toggle('hidden',!(touchish&&G.state==='lure'));
+ $('stick').classList.toggle('hidden',!(touchish&&G.state==='lure'));$('dashBtn').classList.toggle('hidden',!(touchish&&G.state==='lure'));actBtn.classList.toggle('lefty',touchish&&G.state==='lure');
  if(G.state==='lure'&&G.lure){$('dashBtn').classList.toggle('cool',G.lure.dashCd>0);$('dashBtn').classList.toggle('on',G.lure.dashT>0);}
  canvas.classList.toggle('grab',G.state==='landing'&&!touchish);
  if(G.state==='reeling'){const F=G.fight,pd=pullInput(),run=F.phase==='run';

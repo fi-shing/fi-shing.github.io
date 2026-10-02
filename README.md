@@ -1,4 +1,4 @@
-# Fishing Adventure Depths
+﻿# Fishing Adventure Depths
 
 A fishing game that runs in a web browser as a single HTML file. It works on desktop and on iPad.
 
@@ -13,10 +13,10 @@ Open `index.html` in a browser (Safari, Chrome or Edge).
 | Walk the deck | `A` `D` or arrow keys, or click the deck | Tap the deck |
 | Use a station (cooler, helm, logbook, tackle box) | Walk to it and press `E`, or click it | Tap it |
 | Cast | Click the water in front of or behind the boat, or press `Space` | Tap the water |
-| Steer the lure | Move the mouse, or use the arrow keys | Joystick (bottom left) |
-| Dash to strike a fish | Click | DASH button |
-| Reel in | Hold `Space` | Hold REEL IN |
-| Pull against a running fish | `←` `→` | PULL buttons |
+| Steer the lure | Move the mouse, or use the arrow keys | Joystick (bottom right) |
+| Dash to strike a fish | Click | DASH button (bottom left) |
+| Reel in | Hold `Space` | Hold REEL IN (bottom left) |
+| Pull against a running fish | `â†` `â†’` | PULL buttons |
 | Grab the fish's lip | Move the hand with the mouse and click | Drag the hand, then lift your finger |
 
 ## Features
