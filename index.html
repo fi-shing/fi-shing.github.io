@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Fishing Adventure Depths</title>
+<title>FI$HING!</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Fishing Depths">
+<meta name="apple-mobile-web-app-title" content="FI$HING!">
 <meta name="theme-color" content="#0a1116">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
 <style>
@@ -67,6 +67,7 @@ canvas#game.grab{cursor:none}canvas#game.point{cursor:pointer}
 .overlay{position:fixed;inset:0;background:rgba(3,8,12,.66);display:flex;align-items:center;justify-content:center;z-index:10;padding:10px}
 .panel{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;width:100%;max-width:760px;max-height:92%;overflow:auto;padding:18px 18px 22px;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:pop .2s ease-out}
 .panel h2{font-family:var(--display);font-size:30px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-bottom:2px;text-wrap:balance}
+.brand{font-family:var(--display);font-weight:700;font-size:56px;line-height:1;letter-spacing:.04em;color:var(--ink);margin:4px 0 14px}.brand span{color:var(--accent)}
 .panel h3{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:20px 0 8px}
 .panel p{margin:4px 0;line-height:1.45;max-width:65ch}
 .sub{color:var(--mute);font-weight:500}
@@ -1614,7 +1615,7 @@ function renderLog(){
  return h;
 }
 function renderHelp(){
- return '<h2>How to fish</h2><ol class="steps">'+
+ return '<div class="brand">FI<span>$</span>HING!</div><h2>How to fish</h2><ol class="steps">'+
  '<li><b>Walk your boat.</b> Use <span class="kbd">A</span><span class="kbd">D</span> or <span class="kbd">←</span><span class="kbd">→</span>, or click the deck. Walk up to a station and press <span class="kbd">E</span> (or click it): the <b>fish cooler</b> sells your catch, the <b>helm</b> sails to new places, the <b>logbook</b> shows every species, and the <b>tackle box</b> upgrades your gear.</li>'+
  '<li><b>Cast.</b> Click the water in front of the boat, or behind it. Your angler walks to the bow or the stern and casts.</li>'+
  '<li><b>Steer your lure.</b> The lure swims toward your mouse. You can take it anywhere: under the boat, behind it, and down the rocky pathways into deeper caves. On a touch screen, drag your finger.</li>'+

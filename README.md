@@ -1,4 +1,4 @@
-# Fishing Adventure Depths
+# FI$HING!
 
 A fishing game that runs in a web browser as a single HTML file. It works on desktop and on iPad.
 
@@ -6,7 +6,7 @@ Walk the deck of your boat, cast, and steer your lure down winding cave pathways
 
 ## How to play
 
-Open `index.html` in a browser (Safari, Chrome or Edge).
+Play it at **https://fi-shing.github.io**, or open `index.html` in a browser (Safari, Chrome or Edge). On iPad, use Share → Add to Home Screen to open it full-screen like an app.
 
 | | Computer | iPad / touch |
 |---|---|---|
