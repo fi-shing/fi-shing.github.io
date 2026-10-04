@@ -21,7 +21,8 @@ Play it at **https://fi-shing.github.io**, or open `index.html` in a browser (Sa
 
 ## Features
 
-- 39 real fish species in six places, from a home pond to the deep sea (25 m to 500 m deep)
+- 47 real fish species in seven places, from a home pond to the Amazon River and the deep sea (25 m to 500 m deep)
+- Boss fights with giant fish in deep lair caves: Wels Catfish, Alligator Gar, Redtail Catfish, Arapaima and Piraíba. You need top-level gear to beat them, and each one has its own moves.
 - Cave pathways lead to deeper water, and the deeper you go, the bigger the fish
 - The fishing line trails along the path your lure took. Each rod holds a set length of line.
 - Weather (rain, storms, fog, snow) and a day/night cycle that affect which fish bite
