@@ -300,10 +300,13 @@ const LIGHTS=makeGear(['No light','Small LED','Bright LED','Dive Torch','Floodli
 const SONARS=makeGear(['No fish finder','Depth Sounder','Fish Finder','Side-Scan Sonar','3D Live Sonar'],600,3);
 const GLOVES=makeGear(['Bare hands','Cotton Gloves','Rubber Gloves','Grip Gloves','Pro Lip Grips','Iron Grip'],300,2.4);
 const SCENTS=makeGear(['No scent','Fish Oil','Garlic Scent','Shrimp Attractant','Blood Bait','Legendary Chum'],350,2.4);
+// fish repellent: fish lighter than the level's limit (in pounds) swim away from your lure
+const REPELS=makeGear(['No repellent','Mild Repellent','Strong Repellent','Big-Game Repellent','Monster Repellent','Trophy-Only Repellent'],500,2.4);
+const REPEL_LB=[0,2,8,25,80,250];
 const BUCKETS=makeGear(['Small Cooler','Deck Cooler','Big Cooler','Fish Box','Insulated Fish Hold','Ship Hold','Live Well','Cargo Hold','Freezer Room','Fish Factory'],75,2.1,i=>({cap:[5,8,12,18,25,40,55,75,100,140][i]}));
 // all gear in tackle-box order: key in the save, the list, the row label
 const GEAR=[['rod',RODS,'Rod'],['reel',REELS,'Reel'],['line',LINES,'Fishing line'],['hook',HOOKS,'Hook'],['lure',LURES,'Lure'],['sinker',SINKERS,'Sinker'],
- ['light',LIGHTS,'Lure light'],['sonar',SONARS,'Fish finder'],['gloves',GLOVES,'Landing gloves'],['scent',SCENTS,'Fish scent'],['bucket',BUCKETS,'Cooler']];
+ ['light',LIGHTS,'Lure light'],['sonar',SONARS,'Fish finder'],['gloves',GLOVES,'Landing gloves'],['scent',SCENTS,'Fish scent'],['repel',REPELS,'Fish repellent'],['bucket',BUCKETS,'Cooler']];
 function rodStats(t){return {line:Math.round(35*Math.pow(1.42,t)),strength:1-t*0.035};}
 function reelStats(t){return {speed:1+t*0.13,drag:1+t*0.12};}
 function lineStats(t){return {snap:1+t*0.3,pull:1-t*0.04};}
@@ -339,7 +342,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 
 // ---------- save / load ----------
 const KEY='kidFishingAdventure_v1';
-function defaults(){return {money:0,rod:0,bucket:0,lure:0,line:0,light:0,sonar:0,unlocked:['pond'],loc:'pond',fish:[],log:{},muted:false,earned:0,caught:0,escaped:0,seenHelp:false,won:false,order:null,served:0,trophies:{},admin:false,god:false,reel:0,hook:0,sinker:0,gloves:0,scent:0};}
+function defaults(){return {money:0,rod:0,bucket:0,lure:0,line:0,light:0,sonar:0,unlocked:['pond'],loc:'pond',fish:[],log:{},muted:false,earned:0,caught:0,escaped:0,seenHelp:false,won:false,order:null,served:0,trophies:{},admin:false,god:false,reel:0,hook:0,sinker:0,gloves:0,scent:0,repel:0,repelOn:true};}
 function load(){
  const d=defaults();
  try{
@@ -766,8 +769,11 @@ function updateSwimmers(dt){
  for(const f of G.swim){
   f.hitT=Math.max(0,f.hitT-dt);f.fleeT=Math.max(0,f.fleeT-dt);
   if(f.state==='hooked'||f.state==='boss')continue;
+  // fish repellent scares smaller fish away from your lure
+  if(S.repel&&S.repelOn!==false&&G.lure&&G.state==='lure'){const lb=(f.sp.minW+f.t*(f.sp.maxW-f.sp.minW))*2.20462,dx=f.x-G.lure.x,dy=f.y-G.lure.y,R=220*s;
+   if(lb<REPEL_LB[S.repel]&&dx*dx+dy*dy<R*R){f.dir=dx<0?-1:1;f.fleeT=0.6;f.ty=f.y+Math.sign(dy||1)*Lay.C*2;}}
   // fish scent pulls nearby fish toward your lure
-  if(S.scent&&G.lure&&G.state==='lure'&&f.fleeT<=0){const dx=G.lure.x-f.x,dy=G.lure.y-f.y,R=scentStats(S.scent).r*s;if(dx*dx+dy*dy<R*R){f.dir=dx<0?-1:1;f.ty=G.lure.y;}}
+  if(S.scent&&G.lure&&G.state==='lure'&&f.fleeT<=0&&!(S.repel&&S.repelOn!==false&&(f.sp.minW+f.t*(f.sp.maxW-f.sp.minW))*2.20462<REPEL_LB[S.repel])){const dx=G.lure.x-f.x,dy=G.lure.y-f.y,R=scentStats(S.scent).r*s;if(dx*dx+dy*dy<R*R){f.dir=dx<0?-1:1;f.ty=G.lure.y;}}
   f.turnT-=dt;if(f.turnT<=0){f.turnT=rand(3,8);if(Math.random()<0.4)f.dir*=-1;f.ty=f.y+rand(-2,2)*Lay.C;}
   const sp=f.fleeT>0?f.spd*4:f.spd;f.vx+=(f.dir*sp-f.vx)*Math.min(1,dt*(f.fleeT>0?6:2));
   const y0=Lay.waterY+Math.max(0.02,f.sp.d[0]-0.05)*Lay.depthPx,y1=Lay.waterY+Math.min(1,f.sp.d[1]+0.05)*Lay.depthPx;f.ty=clamp(f.ty,y0,y1);
@@ -1152,7 +1158,7 @@ function update(dt){
  switch(G.state){
   case 'casting':G.castT+=dt/0.6;if(G.castT>=1)enterWater();break;
   case 'lure':updateLure(dt);break;
-  case 'reeling':updateFight(dt);break;
+  case 'reeling':if(G.lure&&G.fight&&G.hookedFish)updateFight(dt);else{G.state='idle';G.fight=null;G.lure=null;}break;
   case 'landing':updateLanding(dt);break;
   case 'escaped':G.escT-=dt;if(G.escT<=0)G.state='idle';break;
   case 'sailing':updateSail(dt);break;
@@ -1471,7 +1477,8 @@ function drawLine(){
  if(st==='casting'){const t=clamp((G.castT-0.35)/0.65,0,1),c=G.castTo,x=lerp(tp.x,c.x,t),y=lerp(tp.y,c.y,t)-Math.sin(t*Math.PI)*120*s;
   ctx.beginPath();ctx.moveTo(tp.x,tp.y);ctx.quadraticCurveTo((tp.x+x)/2,Math.max(tp.y,y)+14*s,x,y);ctx.stroke();drawLure(x,y);return;}
  if(!G.lure||st==='landing'){if(st==='landing')return;ctx.beginPath();ctx.moveTo(tp.x,tp.y);const lx=tp.x+Math.sin(T*1.5)*2;ctx.lineTo(lx,tp.y+26*s);ctx.stroke();drawLure(lx,tp.y+28*s,Math.PI/2);return;}
- const L=G.lure,p=L.path,e=p[0],tn=st==='reeling'&&G.fight?clamp(G.fight.ten,0,1):0.3;
+ if(st==='reeling')return;
+ const L=G.lure,p=L.path,e=p[0],tn=0.3;
  // the line: down from the rod tip to where it enters the water, then along the trail the lure left behind
  ctx.beginPath();ctx.moveTo(tp.x,tp.y);ctx.quadraticCurveTo((tp.x+e.x)/2,Math.max(tp.y,e.y)+(1-tn)*30*s,e.x,e.y);
  for(let i=1;i<p.length;i++)ctx.lineTo(p[i].x,p[i].y);ctx.lineTo(L.x,L.y);
@@ -1731,6 +1738,7 @@ function gearDesc(key,i){switch(key){
  case 'sonar':return ['No map of the water yet.','Shows a map of the caves and your lure.','Also shows every fish on the map.','Shows fish colored by rarity.','A bigger live map with fish, rarity and boss lairs.'][i];
  case 'gloves':{const b=gloveStats(i);return (i?'The grab ring is '+Math.round((b.ring-1)*100)+'% bigger. ':'')+'You get '+b.tries+' tries to lip a fish.';}
  case 'scent':return i?'Pulls fish within '+Math.round(scentStats(i).r/10)+' m of your lure toward it, and more fish show up.':'No scent. Fish only notice your lure up close.';
+ case 'repel':return i?'Fish under '+REPEL_LB[i]+' lb swim away from your lure'+(S.repelOn===false?' (switched off).':'.'):'No repellent. Small fish crowd your lure.';
  case 'bucket':return 'Holds '+BUCKETS[i].cap+' fish.';}}
 // one upgrade button per kind of gear; the next item stays a surprise, and better gear is only sold at farther maps
 function gearRow(key,arr,label){const cur=S[key]||0,max=cur>=arr.length-1,next=arr[cur+1],here=MAP_ORDER.indexOf(S.loc);
@@ -1738,6 +1746,7 @@ function gearRow(key,arr,label){const cur=S[key]||0,max=cur>=arr.length-1,next=a
  if(max)act='<span class="max">Fully upgraded</span>';
  else if(next.map>here)act='<button class="btn" disabled>Upgrade · '+fmt(next.price)+'</button><small>Sold at '+esc(LMAP[MAP_ORDER[next.map]].name)+'</small>';
  else act='<button class="btn" data-act="buy" data-kind="'+key+'" '+(S.money<next.price?'disabled':'')+'>Upgrade · '+fmt(next.price)+'</button>'+(S.money<next.price?'<small>Need '+fmt(next.price-S.money)+' more</small>':'<small>Level '+(cur+2)+' of '+arr.length+'</small>');
+ if(key==='repel'&&cur>0)act+='<button class="btn blue" data-act="repeltoggle">Repellent: '+(S.repelOn===false?'OFF':'ON')+'</button>';
  return '<div class="gearRow"><div><div class="k">'+label+'</div><div class="n">'+esc(arr[cur].name)+'</div>'+lvl+'</div><div class="act">'+act+'</div><div class="d">'+gearDesc(key,cur)+'</div></div>';}
 function newHere(){const here=MAP_ORDER.indexOf(S.loc);return GEAR.filter(g=>{const n=g[1][(S[g[0]]||0)+1];return n&&n.map===here;}).length;}
 function renderShop(){const fresh=newHere();
@@ -1772,7 +1781,7 @@ function renderHelp(){
  '<li><b>Strike fish.</b> Ram a fish with your lure to weaken it. Faster hits do more damage, so click to <b>dash</b>. When its health bar is empty, it is hooked. Some fish are too strong for your lure until you upgrade it. The deeper you go, the bigger the fish.</li>'+
  '<li><b>Reel it in.</b> Hold to reel. If the LINE meter reaches red, let go or it snaps. When the fish runs one way, pull the rod the other way with the <b>← PULL →</b> buttons or the arrow keys.</li>'+
  '<li><b>Lip it.</b> At the boat, move your hand to the fish’s lower lip with the mouse and click to grab it. You get 3 tries.</li>'+
- '<li><b>Upgrade.</b> The tackle box has 11 kinds of gear: rod (how much line you have), reel (reel speed, and stops big fish pulling line off), fishing line, hook, lure, sinker (lure speed), lure light, fish finder, landing gloves, fish scent and cooler. Better gear is only sold at farther maps, so every new map brings new upgrades. Each one is a surprise until you buy it.</li>'+
+ '<li><b>Upgrade.</b> The tackle box has 12 kinds of gear: rod (how much line you have), reel (reel speed, and stops big fish pulling line off), fishing line, hook, lure, sinker (lure speed), lure light, fish finder, landing gloves, fish scent, fish repellent (scares away small fish, with an on/off switch) and cooler. Better gear is only sold at farther maps, so every new map brings new upgrades. Each one is a surprise until you buy it.</li>'+
  '<li><b>Big fish pull line.</b> When a big fish runs, it pulls line off your reel. If it takes all of it, the line is gone. Pull against the run and wait for it to tire before reeling hard.</li>'+
  '<li><b>Boss fights.</b> Giant fish guard big lair caves deep down: the Wels Catfish (Rushing River), the giant Alligator Gar (Trinity River), and the Redtail Catfish, Arapaima and Pira\u00edba (Amazon River). The fish finder marks their lairs with red circles. You need a very good rod and lure to hurt them. Bosses charge your lure, and every hit damages your line, so dodge, then strike while they recover. Beat one, reel it in and lip it to earn a trophy.</li>'+
  '<li><b>Weather and time.</b> Rain brings more fish out. Storms bring big fish that fight harder. Fog hides legendary fish.</li></ol>'+
@@ -1824,7 +1833,8 @@ function buy(kind){
  if(arr[i].map>MAP_ORDER.indexOf(S.loc)){Snd.error();toast('That upgrade is only sold at '+LMAP[MAP_ORDER[arr[i].map]].name+'.','bad');return;}
  if(S.money<p){Snd.error();toast('Not enough money yet. You need '+fmt(p-S.money)+' more.','bad');return;}
  S.money-=p;S[kind]=i;save();Snd.buy();toast('Upgraded! You got the '+arr[i].name+'.','good',3200);updateHUD();renderPanel();
-}function buyTicket(id){const l=LMAP[id];if(!l||S.unlocked.indexOf(id)>=0)return;
+}function travelTo(id){if(S.unlocked.indexOf(id)<0||id===S.loc)return;closePanel();startSail(id);}
+function buyTicket(id){const l=LMAP[id];if(!l||S.unlocked.indexOf(id)>=0)return;
  if(S.money<l.price){Snd.error();toast('Not enough money! Need '+fmt(l.price-S.money)+' more.','bad');return;}
  S.money-=l.price;S.unlocked.push(id);save();updateHUD();toast('🎟️ Ticket bought! You can sail to '+l.name+' any time!','gold',3000);confetti(50);travelTo(id);}
 function sellIdx(i){const f=S.fish[i];if(!f)return;S.fish.splice(i,1);S.money+=f.v;S.earned+=f.v;save();Snd.coin();toast('+'+fmt(f.v)+' 💰','gold',1400);updateHUD();renderPanel();}
@@ -1840,7 +1850,8 @@ body.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retur
  else if(a==='go')travelTo(b.dataset.id);else if(a==='ticket')buyTicket(b.dataset.id);else if(a==='close')closePanel();
  else if(a==='askreset'){curPanel='reset';renderPanel();}else if(a==='doreset')doReset();else if(a==='help'){curPanel='help';renderPanel();}
  else if(a==='mute'){toggleMute();renderPanel();}
- else if(a==='adm')adminCmd(b.dataset.cmd);});
+ else if(a==='adm')adminCmd(b.dataset.cmd);
+ else if(a==='repeltoggle'){S.repelOn=S.repelOn===false;save();Snd.click();renderPanel();}});
 body.addEventListener('submit',e=>{e.preventDefault();if(e.target.id==='admForm')checkAdminCode();});
 $('adminBtn').addEventListener('click',e=>{e.currentTarget.blur();openPanel('admin');setTimeout(()=>{const i=$('admCode');if(i)i.focus();},60);});
 $('closeBtn').addEventListener('click',closePanel);
