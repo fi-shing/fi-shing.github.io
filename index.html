@@ -38,7 +38,9 @@ canvas#game.grab{cursor:none}canvas#game.point{cursor:pointer}
 .pill.bump{transform:scale(1.12);border-color:var(--good)}
 .pill.full{border-color:var(--bad);color:#ffd2cc;animation:shake .5s}
 #locName{flex:1;text-align:center;font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 3px rgba(0,0,0,.6)}
-#muteBtn{width:36px;height:34px;border-radius:999px;border:1px solid var(--line);background:var(--glass);font-size:16px}
+#muteBtn,#adminBtn{width:36px;height:34px;border-radius:999px;border:1px solid var(--line);background:var(--glass);font-size:16px}
+.admForm{display:flex;gap:8px;margin:16px 0 6px}.admForm input{flex:1;min-width:0;font:inherit;font-size:20px;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);letter-spacing:.1em;-webkit-user-select:text;user-select:text}.admForm input:focus{outline:2px solid var(--accent)}
+.admMsg{color:var(--bad);min-height:20px;font-weight:600}.admGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.admGrid .btn{width:100%;white-space:normal}
 #wxPill{cursor:help}
 #hint{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--line);padding:7px 16px;border-radius:10px;font-weight:600;font-size:16px;text-align:center;max-width:min(92%,620px);pointer-events:none;line-height:1.3;text-wrap:balance;z-index:1}
 #hint small{display:block;font-size:12px;color:var(--mute);font-weight:500;margin-top:2px}
@@ -169,6 +171,7 @@ html,body{overscroll-behavior:none}
    <div id="locName">Home Pond</div>
    <div class="pill" id="wxPill" title="Weather">☀️ <span class="tm">8:00 AM</span></div>
    <div class="pill" id="bucketPill" title="Fish in your cooler"><small>Cooler</small> <span id="bucketCount">0/5</span></div>
+   <button id="adminBtn" title="Admin commands" aria-label="Admin commands">🔑</button>
    <button id="muteBtn" title="Sound on/off (M)" aria-label="Toggle sound">🔊</button>
   </header>
   <div id="hint">Loading…</div>
@@ -347,7 +350,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 
 // ---------- save / load ----------
 const KEY='kidFishingAdventure_v1';
-function defaults(){return {money:0,rod:0,bucket:0,lure:0,line:0,light:0,sonar:0,unlocked:['pond'],loc:'pond',fish:[],log:{},muted:false,earned:0,caught:0,escaped:0,seenHelp:false,won:false,order:null,served:0,trophies:{}};}
+function defaults(){return {money:0,rod:0,bucket:0,lure:0,line:0,light:0,sonar:0,unlocked:['pond'],loc:'pond',fish:[],log:{},muted:false,earned:0,caught:0,escaped:0,seenHelp:false,won:false,order:null,served:0,trophies:{},admin:false,god:false};}
 function load(){
  const d=defaults();
  try{
@@ -920,7 +923,7 @@ function updateBosses(dt){
   if(L&&G.state==='lure'&&!L.hitCd&&(b.mode==='charge'||(B.move==='frenzy'&&b.phase===2&&b.mode==='patrol'&&b.active))){
    const hx=(L.x-f.x)*f.dir,hy=L.y-f.y,ex=f.L*0.55*(B.move==='lunge'?1.25:1),ey=f.bh*0.7+6*s;
    if(hx*hx/(ex*ex)+hy*hy/(ey*ey)<1){const dmg=Math.round(B.lineDmg*(b.phase===2?1.3:1)*(B.move==='lunge'&&b.mode==='charge'?1.4:1));
-    L.lineHp-=dmg;L.hitCd=0.9;floatText(L.x,L.y-22*s,'Line -'+dmg,'#ff9a8a');Snd.hit();G.shake=0.3;
+    if(!S.god)L.lineHp-=dmg;L.hitCd=0.9;floatText(L.x,L.y-22*s,'Line -'+dmg,'#ff9a8a');Snd.hit();G.shake=0.3;
     const kx=Math.sign(L.x-f.x)||1;moveLure(L.x+kx*60*s,L.y-30*s);
     if(L.lineHp<=0){lineBroken(f);return;}
     if(b.mode==='charge'){b.mode='recover';b.t=0;}}}
@@ -987,12 +990,12 @@ function updateFight(dt){
  let tT=reel?0.3+eff:0.12+eff*0.5;if(L.atMax&&run)tT+=0.3;
  F.ten+=(tT-F.ten)*Math.min(1,dt*(tT>F.ten?6:4));
  if(F.ten>0.9)F.strain+=dt*(1+(F.ten-0.9)*8)/ls.snap;else F.strain=Math.max(0,F.strain-dt*0.8);
- if(F.strain>=1){escapeFish('snap');return;}
+ if(F.strain>=1&&!S.god){escapeFish('snap');return;}
  const effN=clamp(eff,0,1.1);
  if(reel){retract(dt*125*s*F.reel*Math.max(0.05,1.1-0.85*effN)*(1+0.6*(1-F.stam))/(1+F.d*0.12));F.idle=0;F.clickT-=dt;if(F.clickT<=0){F.clickT=0.08;Snd.tick();}}
  else{if(run){const v=eff*110*s*(F.counter>0.3?0.45:1);moveLure(L.x+F.dir*v*dt,L.y+F.str*14*s*dt);F.dragT-=dt;if(eff>0.2&&F.dragT<=0){F.dragT=0.06;Snd.drag();}}
   F.idle=run?Math.max(0,F.idle-dt):F.idle+dt;}
- if(F.idle>3.2){escapeFish('shake');return;}
+ if(F.idle>3.2&&!S.god){escapeFish('shake');return;}
  const drain=run?0.14*(0.5+0.5*Math.max(0,F.counter)+(reel?0.3:0)):(reel?0.03:-0.015);
  F.stam=clamp(F.stam-drain*dt/(1+F.d*0.075),0,1);
  F.dist=clamp(lineUsed()/F.startLen,0,1);
@@ -1693,7 +1696,7 @@ function openPanel(name){
 function closePanel(){if(modal.classList.contains('hidden'))return;modal.classList.add('hidden');
  if(curPanel==='help'&&!S.seenHelp){S.seenHelp=true;save();}curPanel=null;}
 function renderPanel(){
- const fn={market:renderMarket,shop:renderShop,travel:renderTravel,log:renderLog,help:renderHelp,reset:renderReset,win:renderWin}[curPanel];
+ const fn={admin:renderAdmin,market:renderMarket,shop:renderShop,travel:renderTravel,log:renderLog,help:renderHelp,reset:renderReset,win:renderWin}[curPanel];
  if(fn){const st=$('panel').scrollTop;body.innerHTML=fn();$('panel').scrollTop=st;}
 }
 function orderHTML(){
@@ -1764,6 +1767,40 @@ function renderHelp(){
  '<button class="big gray" data-act="mute">'+(S.muted?'Sound is off. Turn it on':'Sound is on. Turn it off')+'</button>'+
  '<button class="big green" data-act="close">Go fishing</button>'+
  '<button class="big red" data-act="askreset" style="font-size:16px">Reset game</button>';
+}// ---------- admin commands (unlocked with a secret code) ----------
+// only a scrambled number is stored here, not the code itself
+const ADMIN_HASH=1229399343;
+function renderAdmin(){
+ if(!S.admin)return '<h2>Admin</h2><p class="sub">Type the admin code to unlock admin commands.</p>'+
+  '<form class="admForm" id="admForm" autocomplete="off"><input id="admCode" type="password" inputmode="text" autocapitalize="characters" spellcheck="false" placeholder="Code" aria-label="Admin code"><button class="btn" type="submit">Unlock</button></form><p class="admMsg" id="admMsg"></p>';
+ const B=(cmd,label)=>'<button class="btn blue" data-act="adm" data-cmd="'+cmd+'">'+label+'</button>';
+ return '<h2>Admin commands</h2><p class="sub">You have '+fmt(S.money)+'. God mode is <b>'+(S.god?'ON':'OFF')+'</b>.</p>'+
+  '<h3>Money</h3><div class="admGrid">'+B('m1k','+ $1,000')+B('m10k','+ $10,000')+B('m100k','+ $100,000')+B('m0','Set money to $0')+'</div>'+
+  '<h3>Gear</h3><div class="admGrid">'+B('maxgear','Max out all gear')+B('resetgear','Reset gear to level 1')+'</div>'+
+  '<h3>Places & fish</h3><div class="admGrid">'+B('unlock','Unlock all places')+B('reveal','Fill the logbook')+B('bosses','Bring all bosses back')+B('empty','Empty the cooler')+'</div>'+
+  '<h3>Fighting</h3><div class="admGrid">'+B('god',S.god?'God mode: turn OFF':'God mode: turn ON')+B('weak','Weaken all fish nearby')+'</div>'+
+  '<h3>Weather</h3><div class="admGrid">'+Object.keys(WXT).map(k=>B('wx_'+k,WXT[k].e+' '+WXT[k].n)).join('')+'</div>'+
+  '<h3>Time of day</h3><div class="admGrid">'+B('t_6','🌅 Sunrise')+B('t_12','☀️ Noon')+B('t_18','🌇 Sunset')+B('t_0','🌙 Midnight')+'</div>'+
+  '<button class="big red" data-act="adm" data-cmd="lock" style="font-size:16px">Lock admin commands</button>';
+}
+function checkAdminCode(){const inp=$('admCode');if(!inp)return;
+ if(hashStr(inp.value.trim())===ADMIN_HASH){S.admin=true;save();Snd.buy();toast('Admin commands unlocked.','good');renderPanel();}
+ else{Snd.error();$('admMsg').textContent='That code is not right. Try again.';inp.value='';inp.focus();}}
+function adminCmd(cmd){
+ const top=a=>a.length-1;
+ if(cmd==='m1k')S.money+=1000;else if(cmd==='m10k')S.money+=10000;else if(cmd==='m100k')S.money+=100000;else if(cmd==='m0')S.money=0;
+ else if(cmd==='maxgear'){S.rod=top(RODS);S.lure=top(LURES);S.bucket=top(BUCKETS);S.line=top(LINES);S.light=top(LIGHTS);S.sonar=top(SONARS);}
+ else if(cmd==='resetgear'){S.rod=S.lure=S.bucket=S.line=S.light=S.sonar=0;}
+ else if(cmd==='unlock')S.unlocked=LOCS.map(l=>l.id);
+ else if(cmd==='reveal'){for(const sp of FISH)if(!S.log[sp.id])S.log[sp.id]={count:1,best:sp.minW};}
+ else if(cmd==='bosses'){G.bossDone={};G.swim=G.swim.filter(f=>!f.boss||f.state==='hooked');spawnBosses();}
+ else if(cmd==='empty')S.fish=[];
+ else if(cmd==='god')S.god=!S.god;
+ else if(cmd==='weak'){let n=0;for(const f of G.swim)if(f.state==='swim'||f.state==='boss'){f.hp=Math.min(f.hp,1);n++;}toast(n+' fish weakened. One hit catches them.','good');}
+ else if(cmd.startsWith('wx_')){WX.type=cmd.slice(3);WX.t=0;WX.dur=rand(70,150);}
+ else if(cmd.startsWith('t_'))G.clock=+cmd.slice(2);
+ else if(cmd==='lock'){S.admin=false;S.god=false;}
+ save();updateHUD();Snd.click();renderPanel();
 }function renderReset(){return '<h2>🗑️ Start over?</h2><p style="font-size:18px">Are you sure? <b>All your money, fish, upgrades and tickets will be gone</b> and you will start again at the Home Pond.</p><button class="big red" data-act="doreset">Yes, reset everything</button><button class="big green" data-act="help">No, keep my game!</button>';}
 function renderWin(){return '<h2 style="text-align:center;font-size:32px">🏆 MASTER ANGLER! 🏆</h2><p style="text-align:center;font-size:20px">WOW! You caught all '+FISH.length+' kinds of fish!<br>You are the best fisher in the whole world! 🎉</p><p style="text-align:center">Keep fishing to beat your size records and get rich!</p><button class="big gold" data-act="close">Hooray! 🎣</button>';}
 
@@ -1789,7 +1826,10 @@ body.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retur
  if(a==='sell')sellIdx(+b.dataset.i);else if(a==='sellall')sellAll();else if(a==='feed')feedCustomer();else if(a==='buy')buy(b.dataset.kind);
  else if(a==='go')travelTo(b.dataset.id);else if(a==='ticket')buyTicket(b.dataset.id);else if(a==='close')closePanel();
  else if(a==='askreset'){curPanel='reset';renderPanel();}else if(a==='doreset')doReset();else if(a==='help'){curPanel='help';renderPanel();}
- else if(a==='mute'){toggleMute();renderPanel();}});
+ else if(a==='mute'){toggleMute();renderPanel();}
+ else if(a==='adm')adminCmd(b.dataset.cmd);});
+body.addEventListener('submit',e=>{e.preventDefault();if(e.target.id==='admForm')checkAdminCode();});
+$('adminBtn').addEventListener('click',e=>{e.currentTarget.blur();openPanel('admin');setTimeout(()=>{const i=$('admCode');if(i)i.focus();},60);});
 $('closeBtn').addEventListener('click',closePanel);
 modal.addEventListener('pointerdown',e=>{if(e.target===modal)closePanel();});
 $('ccOk').addEventListener('click',()=>{closeCatchCard();});
