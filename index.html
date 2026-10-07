@@ -769,11 +769,8 @@ function updateSwimmers(dt){
  for(const f of G.swim){
   f.hitT=Math.max(0,f.hitT-dt);f.fleeT=Math.max(0,f.fleeT-dt);
   if(f.state==='hooked'||f.state==='boss')continue;
-  // fish repellent scares smaller fish away from your lure
-  if(S.repel&&S.repelOn!==false&&G.lure&&G.state==='lure'){const lb=(f.sp.minW+f.t*(f.sp.maxW-f.sp.minW))*2.20462,dx=f.x-G.lure.x,dy=f.y-G.lure.y,R=220*s;
-   if(lb<REPEL_LB[S.repel]&&dx*dx+dy*dy<R*R){f.dir=dx<0?-1:1;f.fleeT=0.6;f.ty=f.y+Math.sign(dy||1)*Lay.C*2;}}
   // fish scent pulls nearby fish toward your lure
-  if(S.scent&&G.lure&&G.state==='lure'&&f.fleeT<=0&&!(S.repel&&S.repelOn!==false&&(f.sp.minW+f.t*(f.sp.maxW-f.sp.minW))*2.20462<REPEL_LB[S.repel])){const dx=G.lure.x-f.x,dy=G.lure.y-f.y,R=scentStats(S.scent).r*s;if(dx*dx+dy*dy<R*R){f.dir=dx<0?-1:1;f.ty=G.lure.y;}}
+  if(S.scent&&G.lure&&G.state==='lure'&&f.fleeT<=0){const dx=G.lure.x-f.x,dy=G.lure.y-f.y,R=scentStats(S.scent).r*s;if(dx*dx+dy*dy<R*R){f.dir=dx<0?-1:1;f.ty=G.lure.y;}}
   f.turnT-=dt;if(f.turnT<=0){f.turnT=rand(3,8);if(Math.random()<0.4)f.dir*=-1;f.ty=f.y+rand(-2,2)*Lay.C;}
   const sp=f.fleeT>0?f.spd*4:f.spd;f.vx+=(f.dir*sp-f.vx)*Math.min(1,dt*(f.fleeT>0?6:2));
   const y0=Lay.waterY+Math.max(0.02,f.sp.d[0]-0.05)*Lay.depthPx,y1=Lay.waterY+Math.min(1,f.sp.d[1]+0.05)*Lay.depthPx;f.ty=clamp(f.ty,y0,y1);
@@ -856,6 +853,8 @@ function checkStrikes(){const L=G.lure,s=Lay.s;
  for(const f of G.swim){if(f.state!=='swim'||f.hitT>0)continue;
   const dx=(L.x-f.x)*f.dir,dy=L.y-f.y,ex=f.L*0.5,ey=f.bh*0.6+4*s;if(dx*dx/(ex*ex)+dy*dy/(ey*ey)>1)continue;
   const rel=Math.hypot(L.vx-f.vx,L.vy-f.vy);if(rel<70*s)continue;
+  // fish repellent: fish under its weight limit can't be caught, so hitting them does nothing
+  if(S.repel&&S.repelOn!==false&&(f.sp.minW+f.t*(f.sp.maxW-f.sp.minW))*2.20462<REPEL_LB[S.repel]){f.hitT=1.2;floatText(f.x,f.y-f.bh,'Too small (repellent on)','#cfd8dc');continue;}
   f.hitT=0.45;f.dir=L.x<f.x?1:-1;f.fleeT=1;f.vx=f.dir*f.spd*5;
   if(f.sp.lure>S.lure){floatText(f.x,f.y-f.bh,'Too strong for your lure','#ffb08a');Snd.error();continue;}
   const dmg=Math.max(1,Math.round((7+S.lure*4)*hookStats(S.hook).dmg*clamp(rel/(200*s),0.5,2.2)*(L.dashT>0?1.25:1)));f.hp-=dmg;
@@ -1738,7 +1737,7 @@ function gearDesc(key,i){switch(key){
  case 'sonar':return ['No map of the water yet.','Shows a map of the caves and your lure.','Also shows every fish on the map.','Shows fish colored by rarity.','A bigger live map with fish, rarity and boss lairs.'][i];
  case 'gloves':{const b=gloveStats(i);return (i?'The grab ring is '+Math.round((b.ring-1)*100)+'% bigger. ':'')+'You get '+b.tries+' tries to lip a fish.';}
  case 'scent':return i?'Pulls fish within '+Math.round(scentStats(i).r/10)+' m of your lure toward it, and more fish show up.':'No scent. Fish only notice your lure up close.';
- case 'repel':return i?'Fish under '+REPEL_LB[i]+' lb swim away from your lure'+(S.repelOn===false?' (switched off).':'.'):'No repellent. Small fish crowd your lure.';
+ case 'repel':return i?'Fish under '+REPEL_LB[i]+' lb can’t be caught, so you only land the big ones'+(S.repelOn===false?' (switched off).':'.'):'No repellent. You can catch fish of any size.';
  case 'bucket':return 'Holds '+BUCKETS[i].cap+' fish.';}}
 // one upgrade button per kind of gear; the next item stays a surprise, and better gear is only sold at farther maps
 function gearRow(key,arr,label){const cur=S[key]||0,max=cur>=arr.length-1,next=arr[cur+1],here=MAP_ORDER.indexOf(S.loc);
@@ -1781,7 +1780,7 @@ function renderHelp(){
  '<li><b>Strike fish.</b> Ram a fish with your lure to weaken it. Faster hits do more damage, so click to <b>dash</b>. When its health bar is empty, it is hooked. Some fish are too strong for your lure until you upgrade it. The deeper you go, the bigger the fish.</li>'+
  '<li><b>Reel it in.</b> Hold to reel. If the LINE meter reaches red, let go or it snaps. When the fish runs one way, pull the rod the other way with the <b>← PULL →</b> buttons or the arrow keys.</li>'+
  '<li><b>Lip it.</b> At the boat, move your hand to the fish’s lower lip with the mouse and click to grab it. You get 3 tries.</li>'+
- '<li><b>Upgrade.</b> The tackle box has 12 kinds of gear: rod (how much line you have), reel (reel speed, and stops big fish pulling line off), fishing line, hook, lure, sinker (lure speed), lure light, fish finder, landing gloves, fish scent, fish repellent (scares away small fish, with an on/off switch) and cooler. Better gear is only sold at farther maps, so every new map brings new upgrades. Each one is a surprise until you buy it.</li>'+
+ '<li><b>Upgrade.</b> The tackle box has 12 kinds of gear: rod (how much line you have), reel (reel speed, and stops big fish pulling line off), fishing line, hook, lure, sinker (lure speed), lure light, fish finder, landing gloves, fish scent, fish repellent (fish under its weight limit can’t be caught, with an on/off switch) and cooler. Better gear is only sold at farther maps, so every new map brings new upgrades. Each one is a surprise until you buy it.</li>'+
  '<li><b>Big fish pull line.</b> When a big fish runs, it pulls line off your reel. If it takes all of it, the line is gone. Pull against the run and wait for it to tire before reeling hard.</li>'+
  '<li><b>Boss fights.</b> Giant fish guard big lair caves deep down: the Wels Catfish (Rushing River), the giant Alligator Gar (Trinity River), and the Redtail Catfish, Arapaima and Pira\u00edba (Amazon River). The fish finder marks their lairs with red circles. You need a very good rod and lure to hurt them. Bosses charge your lure, and every hit damages your line, so dodge, then strike while they recover. Beat one, reel it in and lip it to earn a trophy.</li>'+
  '<li><b>Weather and time.</b> Rain brings more fish out. Storms bring big fish that fight harder. Fog hides legendary fish.</li></ol>'+
