@@ -142,6 +142,8 @@ html,body{overscroll-behavior:none}
 #stickKnob{position:absolute;left:50%;top:50%;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;background:rgba(232,238,241,.88);box-shadow:0 4px 12px rgba(0,0,0,.45);pointer-events:none}
 #dashBtn{position:absolute;left:max(24px,env(safe-area-inset-left));bottom:132px;width:80px;height:80px;border-radius:50%;border:3px solid var(--accent);background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:.06em;touch-action:none;z-index:1;box-shadow:0 6px 18px rgba(0,0,0,.45)}
 #actionBtn.lefty{right:auto;left:max(16px,env(safe-area-inset-left))}
+#releaseBtn{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:126px;padding:9px 16px;border-radius:999px;border:2px solid rgba(255,255,255,.45);background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:.08em;color:#fff;touch-action:none;z-index:1;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+#releaseBtn:active{background:rgba(255,255,255,.2)}
 #dashBtn.on{background:var(--accent);color:var(--accent-ink)}
 #dashBtn.cool{opacity:.5}
 @media (pointer:coarse){
@@ -178,6 +180,7 @@ html,body{overscroll-behavior:none}
   <button id="actionBtn" aria-label="Action">CAST</button>
   <div id="stick" class="hidden" aria-label="Steer the lure"><div id="stickKnob"></div></div>
   <button id="dashBtn" class="hidden" aria-label="Dash">DASH</button>
+  <button id="releaseBtn" class="hidden" aria-label="Release the fish">RELEASE</button>
   <div id="pullBox" class="hidden"><button id="pullL" aria-label="Pull rod left">←<small>PULL</small></button><button id="pullR" aria-label="Pull rod right">→<small>PULL</small></button></div>
   <div id="toasts"></div>
  </main>
@@ -930,6 +933,9 @@ function updateBosses(dt){
   if(b.silt>0&&Math.random()<dt*14)G.parts.push({t:'silt',x:b.lx+rand(-b.R,b.R),y:b.ly+rand(-b.R*0.5,b.R*0.5),r:rand(40,90)*s,life:3,max:3});
  }
 }
+// let a hooked fish go: it swims off free and your lure stays in the water
+function releaseFish(){if(G.state!=='reeling'||!G.hookedFish)return;const f=G.hookedFish,name=f.sp.name;releaseHooked();if(!f.boss){f.hp=f.maxHp;f.fleeT=2.5;}
+ G.fight=null;G.holding=false;G.btnPull=0;G.state='lure';if(G.lure){G.lure.done=false;G.lure.vx=G.lure.vy=0;}Snd.splash();toast('You let the '+name+' go.','good',2200);}
 function lineBroken(f){
  const L=G.lure;Snd.snap();if(L)for(let i=0;i<8;i++)G.parts.push({t:'bub',x:L.x,y:L.y,vy:rand(30,90),r:rand(2,4)*Lay.s,life:1.5,max:1.5});
  G.lure=null;G.state='escaped';G.escT=3.2;G.holding=false;
@@ -1643,7 +1649,7 @@ function updateUI(){
  canvas.classList.toggle('point',G.state==='idle'&&!!G.hoverSt);
  const busy=G.state==='reeling'||G.state==='landing';
  $('toolbar').classList.toggle('disabled',busy||G.state==='sailing');
- $('pullBox').classList.toggle('hidden',G.state!=='reeling');
+ $('pullBox').classList.toggle('hidden',G.state!=='reeling');$('releaseBtn').classList.toggle('hidden',G.state!=='reeling');
  $('stick').classList.toggle('hidden',!(touchish&&G.state==='lure'));$('dashBtn').classList.toggle('hidden',!(touchish&&G.state==='lure'));actBtn.classList.toggle('lefty',touchish&&G.state==='lure');
  if(G.state==='lure'&&G.lure){$('dashBtn').classList.toggle('cool',G.lure.dashCd>0);$('dashBtn').classList.toggle('on',G.lure.dashT>0);}
  canvas.classList.toggle('grab',G.state==='landing'&&!touchish);
@@ -1778,7 +1784,7 @@ function renderHelp(){
  '<li><b>Steer your lure.</b> The lure swims toward your mouse. You can take it anywhere: under the boat, behind it, and down the rocky pathways into deeper caves. On a touch screen, drag your finger.</li>'+
  '<li><b>Watch your line.</b> Your line trails along the path your lure took. Each rod holds a set amount of line (see LINE at the top left). Go back along your trail to take line in, or hold <span class="kbd">Space</span> / <b>REEL IN</b> to wind the lure home. A better rod holds more line, so you can reach deeper.</li>'+
  '<li><b>Strike fish.</b> Ram a fish with your lure to weaken it. Faster hits do more damage, so click to <b>dash</b>. When its health bar is empty, it is hooked. Some fish are too strong for your lure until you upgrade it. The deeper you go, the bigger the fish.</li>'+
- '<li><b>Reel it in.</b> Hold to reel. If the LINE meter reaches red, let go or it snaps. When the fish runs one way, pull the rod the other way with the <b>← PULL →</b> buttons or the arrow keys.</li>'+
+ '<li><b>Reel it in.</b> Hold to reel. If the LINE meter reaches red, let go or it snaps. When the fish runs one way, pull the rod the other way with the <b>← PULL →</b> buttons or the arrow keys. Changed your mind? Tap <b>RELEASE</b> (or press <span class="kbd">R</span>) to let the fish go.</li>'+
  '<li><b>Lip it.</b> At the boat, move your hand to the fish’s lower lip with the mouse and click to grab it. You get 3 tries.</li>'+
  '<li><b>Upgrade.</b> The tackle box has 12 kinds of gear: rod (how much line you have), reel (reel speed, and stops big fish pulling line off), fishing line, hook, lure, sinker (lure speed), lure light, fish finder, landing gloves, fish scent, fish repellent (fish under its weight limit can’t be caught, with an on/off switch) and cooler. Better gear is only sold at farther maps, so every new map brings new upgrades. Each one is a surprise until you buy it.</li>'+
  '<li><b>Big fish pull line.</b> When a big fish runs, it pulls line off your reel. If it takes all of it, the line is gone. Pull against the run and wait for it to tire before reeling hard.</li>'+
@@ -1890,6 +1896,7 @@ actBtn.addEventListener('pointerdown',e=>{e.preventDefault();G.holding=true;G.re
  stick.addEventListener('pointermove',e=>{if(e.pointerId===sid)setStick(e);});
  stick.addEventListener('pointerup',e=>{if(e.pointerId===sid)endStick();});stick.addEventListener('pointercancel',endStick);
  $('dashBtn').addEventListener('pointerdown',e=>{e.preventDefault();Snd.get();dash();});}
+$('releaseBtn').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();Snd.get();releaseFish();});
 // stop iPad pinch-zoom and double-tap zoom from getting in the way of the game
 document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('dblclick',e=>e.preventDefault());
 // the PULL buttons: hold one with your other thumb while you reel
@@ -1913,6 +1920,7 @@ window.addEventListener('keydown',e=>{
  if(!modal.classList.contains('hidden')){if(k==='Escape')closePanel();return;}
  if(ACT_KEYS.indexOf(k)>=0){e.preventDefault();if(e.repeat)return;G.holding=true;actionPress();}
  else if(DIRS[k]){e.preventDefault();G.keys[DIRS[k]]=true;if(DIRS[k]==='up'&&G.state==='reeling')G.holding=true;}
+ else if((k==='r'||k==='R')&&G.state==='reeling')releaseFish();
  else if(k==='e'||k==='E'){const st=nearStation();if(st)openPanel(st.id);}
  else if(k==='m'||k==='M')toggleMute();
 });
