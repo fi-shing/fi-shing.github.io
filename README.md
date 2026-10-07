@@ -21,12 +21,13 @@ Play it at **https://fi-shing.github.io**, or open `index.html` in a browser (Sa
 
 ## Features
 
-- 47 real fish species in seven places, from a home pond to the Amazon River and the deep sea (25 m to 500 m deep)
+- 52 real fish species in eight places, from a home pond to the Trinity River (the only place with alligator gar, 4 to 11 feet long), the Amazon River and the deep sea
 - Boss fights with giant fish in deep lair caves: Wels Catfish, Alligator Gar, Redtail Catfish, Arapaima and Piraíba. You need top-level gear to beat them, and each one has its own moves.
 - Cave pathways lead to deeper water, and the deeper you go, the bigger the fish
 - The fishing line trails along the path your lure took. Each rod holds a set length of line.
 - Weather (rain, storms, fog, snow) and a day/night cycle that affect which fish bite
-- Upgrades for your rod, lure, fishing line, lure light, fish finder and cooler
+- About 100 upgrades across 11 kinds of gear (rod, reel, line, hook, lure, sinker, light, fish finder, gloves, scent, cooler). Every map sells new upgrades.
+- Fish are measured in pounds and feet/inches. Big fish pull line off your reel.
 - Sound is generated in the browser, so there are no extra files to download
 
 Progress is saved automatically in the browser.

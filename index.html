@@ -220,7 +220,8 @@ const LOCS=[
  {id:'frozen',depth:90,dpx:4.5,name:'Frozen Lake',price:2200,emoji:'❄️',desc:'Brrr! Icy water under the glowing northern lights.',wx:{clear:4,snow:4,blizzard:1.2,fog:1},
   theme:{sky:['#070d22','#2a456e'],water:['#2a4f68','#04121e'],shore:'#e9f1f6',shore2:'#b9cfe0',shadow:'rgba(0,10,30,0.38)',sun:'night'}},
  {id:'amazon',depth:60,dpx:4.2,name:'Amazon River',price:3500,emoji:'🌿',desc:'A warm, muddy jungle river. Giant catfish and arapaima hide in its deep holes.',wx:{clear:3,cloudy:3,rain:5,storm:2,fog:2},
-  theme:{sky:['#7d9fb0','#e3e4d2'],water:['#7a6238','#22170b'],shore:'#2f4a26',shore2:'#3a5a2e',shadow:'rgba(30,20,5,0.35)',sun:'day'}}, {id:'reef',depth:130,dpx:5.0,name:'Tropical Reef',price:5000,emoji:'🏝️',desc:'Warm, clear water with super colorful coral fish.',wx:{clear:6,cloudy:2,rain:2,storm:1},
+  theme:{sky:['#7d9fb0','#e3e4d2'],water:['#7a6238','#22170b'],shore:'#2f4a26',shore2:'#3a5a2e',shadow:'rgba(30,20,5,0.35)',sun:'day'}}, {id:'trinity',depth:45,dpx:3.6,name:'Trinity River',price:4200,emoji:'🤠',desc:'A big, slow Texas river. The only place in the world to catch alligator gar.',wx:{clear:5,cloudy:3,rain:2,storm:2,fog:1},
+  theme:{sky:['#6a9fd0','#e8e2cc'],water:['#6b6944','#1d1c0e'],shore:'#6b7a40',shore2:'#7a8548',shadow:'rgba(30,25,5,0.35)',sun:'day'}}, {id:'reef',depth:130,dpx:5.0,name:'Tropical Reef',price:5000,emoji:'🏝️',desc:'Warm, clear water with super colorful coral fish.',wx:{clear:6,cloudy:2,rain:2,storm:1},
   theme:{sky:['#3d8fcf','#cfe8f2'],water:['#2b9c9e','#04415a'],shore:'#e9d8ac',shore2:'#cdb98b',shadow:'rgba(0,50,60,0.28)',sun:'day'}},
  {id:'deep',depth:500,dpx:7.0,name:'Deep Sea',price:10000,emoji:'🌊',desc:'Sail far out into the open ocean for the biggest fish of all!',wx:{clear:4,cloudy:3,rain:2,storm:2,fog:1},
   theme:{sky:['#4d86c0','#d6e3ec'],water:['#1e4f7c','#020b18'],shore:'#596a78',shore2:'#4a5a68',shadow:'rgba(0,10,30,0.42)',sun:'day'}}
@@ -247,7 +248,12 @@ const FISH=[
  {id:'walleye',d:[0.35,0.7],name:'Walleye',loc:'lake',rarity:'uncommon',minW:1,maxW:9,price:75,lure:0,diff:4.5,shape:'fusi',o:{dors:'double',h:0.22,eyeK:1.7,mouth:'big'},back:'#4a4622',body:'#ab9c55',belly:'#f0eac8',fin:'#8c7f45',iris:'#f4f1d6',pattern:'bands',patC:'rgba(60,55,25,0.5)',bandN:5,fact:'Walleyes have shiny eyes that see in dark water.'},
  {id:'pike',d:[0.45,0.8],name:'Northern Pike',loc:'lake',rarity:'rare',minW:3,maxW:25,price:170,lure:2,diff:6,shape:'long',back:'#2f4227',body:'#56703b',belly:'#e9e7c5',fin:'#8a6d3b',pattern:'spots',patC:'#e2e4a6',spotN:34,spotR:0.055,fact:'Pike can dash forward super fast to catch food.'},
  {id:'muskie',d:[0.68,1.0],name:'Muskie',loc:'lake',rarity:'legendary',minW:8,maxW:32,price:745,lure:3,diff:8.5,shape:'long',back:'#5b6232',body:'#a1a76b',belly:'#eeeedd',fin:'#9a6b3a',pattern:'bands',patC:'rgba(70,74,35,0.7)',bandN:8,fact:'Muskies are called the fish of 10,000 casts!'},
- {id:'gar',boss:true,d:[0.85,1.0],name:'Alligator Gar',loc:'lake',rarity:'legendary',minW:20,maxW:150,price:1200,lure:4,diff:8.5,shape:'gar',back:'#3c3b27',body:'#6e6d48',belly:'#d8d3a8',fin:'#5a5236',pattern:'spots',patC:'#25241a',spotN:20,spotR:0.05,bigScale:true,fact:'Alligator gar have two rows of teeth, just like an alligator!'},
+ {id:'whitebass',d:[0.04,0.4],name:'White Bass',loc:'trinity',rarity:'common',minW:0.3,maxW:2,price:160,lure:0,diff:4,shape:'fusi',o:{h:0.3,dors:'double'},back:'#56616b',body:'#ccd3d7',belly:'#f2f4f5',fin:'#9aa3a8',pattern:'stripes',patC:'rgba(40,48,56,0.55)',fact:'White bass chase baitfish in big groups and make the water boil.'},
+ {id:'drum',d:[0.3,0.7],name:'Freshwater Drum',loc:'trinity',rarity:'common',minW:0.5,maxW:12,price:170,lure:0,diff:4.5,shape:'carp',o:{h:0.34,hump:0.07,tail:'round',dors:'double'},back:'#6a6f73',body:'#b5babd',belly:'#eceeee',fin:'#8a8f92',pattern:'none',patC:'#000',fact:'Freshwater drum make a grunting sound you can hear from a boat.'},
+ {id:'longnose',d:[0.04,0.45],name:'Longnose Gar',loc:'trinity',rarity:'uncommon',minW:1,maxW:20,price:260,lure:0,diff:5,shape:'gar',o:{h:0.1,nk:2.4},back:'#4a4a32',body:'#8a8a62',belly:'#e3dfc2',fin:'#6a6648',pattern:'spots',patC:'#2a2a1c',spotN:24,spotR:0.06,bigScale:true,fact:'Longnose gar have a snout more than twice as long as the rest of their head.'},
+ {id:'buffalo',d:[0.35,0.75],name:'Smallmouth Buffalo',loc:'trinity',rarity:'uncommon',minW:2,maxW:30,price:280,lure:0,diff:5.5,shape:'carp',o:{h:0.4},back:'#3f4a52',body:'#8b939a',belly:'#dad9d0',fin:'#5d666c',pattern:'none',patC:'#000',bigScale:true,fact:'Buffalo fish look like carp, but they are native to American rivers.'},
+ {id:'flathead',d:[0.55,0.95],name:'Flathead Catfish',loc:'trinity',rarity:'rare',minW:4,maxW:55,price:640,lure:3,diff:7,shape:'cat',o:{h:0.18,nk:0.45},back:'#4a3c22',body:'#8a7444',belly:'#e8dcae',fin:'#6a5832',pattern:'spots',patC:'rgba(40,30,15,0.7)',spotN:26,spotR:0.1,whiskers:true,fact:'Flathead catfish only eat live food and hide under sunken logs.'},
+ {id:'gar',d:[0.35,1.0],name:'Alligator Gar',loc:'trinity',rarity:'rare',minW:8.2,maxW:169,price:900,lure:4,diff:8,shape:'gar',back:'#3c3b27',body:'#6e6d48',belly:'#d8d3a8',fin:'#5a5236',pattern:'spots',patC:'#25241a',spotN:20,spotR:0.05,bigScale:true,fact:'Alligator gar grow from 4 to 11 feet long and have two rows of teeth, just like an alligator!'},
  {id:'grayling',d:[0.04,0.4],name:'Arctic Grayling',loc:'frozen',rarity:'common',minW:0.3,maxW:3,price:85,lure:0,diff:3.5,shape:'fusi',o:{dors:'sail',h:0.22,adip:1},back:'#4f5571',body:'#8a90a8',belly:'#d8d9e2',fin:'#7b5ea0',pattern:'spots',patC:'#2c2c44',spotN:10,spotR:0.04,fact:'Graylings have a huge fin on their back like a sail.'},
  {id:'char',d:[0.06,0.45],name:'Arctic Char',loc:'frozen',rarity:'common',minW:1,maxW:10,price:95,lure:0,diff:4,shape:'fusi',o:{adip:1},back:'#33495e',body:'#5a7287',belly:'#ff6a3d',fin:'#ff7a52',finEdge:'#ffffff',pattern:'spots',patC:'#ffd6c4',spotN:18,spotR:0.04,fact:'Arctic char live farther north than any other freshwater fish.'},
  {id:'burbot',d:[0.32,0.72],name:'Burbot',loc:'frozen',rarity:'uncommon',minW:1,maxW:10,price:160,lure:0,diff:5,shape:'burb',back:'#3f3520',body:'#867546',belly:'#d8ce9e',fin:'#6e5f36',pattern:'spots',patC:'#3a3018',spotN:18,spotR:0.11,whiskers:true,fact:'Burbot are most active in the winter, even under ice!'},
@@ -276,54 +282,37 @@ const FISH=[
  {id:'marlin',d:[0.8,1.0],name:'Blue Marlin',loc:'deep',rarity:'legendary',minW:100,maxW:600,price:4200,lure:5,diff:10,shape:'bill',o:{dors:'sail'},back:'#0f2a72',body:'#2457c5',belly:'#e0e7ff',fin:'#173a8f',pattern:'bands',patC:'rgba(140,200,255,0.65)',bandN:9,fact:'Blue marlins are one of the fastest fish in the ocean!'},
  {id:'gwhite',d:[0.82,1.0],name:'Great White Shark',loc:'deep',rarity:'legendary',minW:300,maxW:1100,price:6000,lure:5,diff:10,shape:'shark',back:'#4b5560',body:'#7d8894',belly:'#f4f6f7',fin:'#5d6772',pattern:'none',patC:'#000',sharpBelly:true,fact:'Great white sharks can smell a tiny drop of blood from far away.'}
 ];
-// line = metres of line on the reel, reel = winding speed, strength = how much of the fish's pull the rod soaks up
-const RODS=[
- {name:'Twig Rod',price:0,color:'#8d6e63',desc:'A bendy stick with some string.'},
- {name:'Bamboo Rod',price:100,color:'#d4b46a',desc:'Light and springy.'},
- {name:'Fiberglass Rod',price:500,color:'#e0f2f1',desc:'Strong and flexible.'},
- {name:'Carbon Rod',price:1500,color:'#37474f',desc:'Super light, super strong.'},
- {name:'Pro Rod',price:3500,color:'#e53935',desc:'Used by fishing champions.'},
- {name:'Golden Rod',price:8000,color:'#ffc107',desc:'A big-game rod with a huge reel.'},
- {name:'Titanium Deep Rod',price:16000,color:'#9aa5ad',desc:'Built for the deepest caves.'},
- {name:'Abyss Master',price:32000,color:'#2c2f6e',desc:'Holds enough line to reach the bottom of the ocean.'}
-];
-const BUCKETS=[
- {name:'Small Cooler',price:0,cap:5},
- {name:'Deck Cooler',price:75,cap:8},
- {name:'Big Cooler',price:300,cap:12},
- {name:'Fish Box',price:1000,cap:18},
- {name:'Insulated Fish Hold',price:2500,cap:25},
- {name:'Ship Hold',price:6000,cap:40},
- {name:'Live Well',price:12000,cap:55},
- {name:'Cargo Hold',price:24000,cap:75}
-];
-const LURES=[
- {name:'Worm',price:0,color:'#c86a5a',desc:'A simple soft bait.'},
- {name:'Spinner',price:150,color:'#b0bec5',desc:'Spins and flashes. Hits a little harder.'},
- {name:'Shiny Spoon',price:600,color:'#cfd8dc',desc:'A heavy metal spoon.'},
- {name:'Glow Jig',price:1800,color:'#9ccc65',desc:'A weighted jig for deep water.'},
- {name:'Rainbow Fly',price:4000,color:'#ce93d8',desc:'Big fish can’t ignore it.'},
- {name:'Golden Lure',price:9000,color:'#ffd54f',desc:'Strong enough for legendary fish.'},
- {name:'Steel Striker',price:18000,color:'#90a4ae',desc:'A heavy steel lure that hits like a hammer.'},
- {name:'Kraken Lure',price:36000,color:'#4db6ac',desc:'The strongest lure ever made.'}
-];
-// fishing line: stronger line takes longer to snap and softens the pull
-const LINES=[
- {name:'Mono 6 lb',price:0},{name:'Mono 12 lb',price:250},{name:'Fluorocarbon 20 lb',price:900},{name:'Braid 40 lb',price:2500},
- {name:'Braid 80 lb',price:6000},{name:'Braid 150 lb',price:13000},{name:'Wire Leader 300 lb',price:26000}
-];
-// lure light: lets you see farther in dark, deep water
-const LIGHTS=[
- {name:'No light',price:0},{name:'Small LED',price:400},{name:'Bright LED',price:1500},{name:'Dive Torch',price:4000},{name:'Floodlight',price:10000},{name:'Sun Lamp',price:22000}
-];
-// fish finder: a sonar map of the caves; higher levels show fish and their rarity
-const SONARS=[
- {name:'No fish finder',price:0},{name:'Depth Sounder',price:600},{name:'Fish Finder',price:3000},{name:'Side-Scan Sonar',price:9000}
-];
-function rodStats(t){return {reel:1+t*0.13,strength:1-t*0.05,line:[35,60,100,160,250,420,600,800][t]};}
-function lureStats(t){return {rare:1+0.3*t,leg:1+0.45*t,sizeK:Math.max(0.55,1.3-0.12*t)};}
-function lineStats(t){return {snap:1+t*0.35,pull:1-t*0.05};}
-function lightStats(t){return {r:150+t*55,dim:1-t*0.08};}
+// ---------- gear ----------
+// Every kind of gear has many levels. Better levels are only sold at later maps (MAP_ORDER), so every map you reach
+// brings new upgrades to the tackle box.
+const MAP_ORDER=['pond','river','lake','frozen','amazon','trinity','reef','deep'];
+function niceP(p){const d=Math.pow(10,Math.max(0,Math.floor(Math.log10(p))-1));return Math.round(p/d)*d;}
+function makeGear(names,base,mult,extra){return names.map((n,i)=>Object.assign({name:n,price:i?niceP(base*Math.pow(mult,i-1)):0,map:i?Math.min(7,Math.floor((i-1)*8/(names.length-1))):0},extra?extra(i):{}));}
+const ROD_COLORS=['#8d6e63','#d4b46a','#cfd8d6','#5d6d74','#37474f','#e53935','#ffc107','#9aa5ad','#2e7d32','#2c2f6e','#6a1b9a','#111111'];
+const RODS=makeGear(['Twig Rod','Bamboo Rod','Fiberglass Rod','Graphite Rod','Carbon Rod','Pro Rod','Golden Rod','Titanium Deep Rod','Trophy Hunter Rod','Abyss Master','Leviathan Rod','Legend of the Depths'],100,1.95,i=>({color:ROD_COLORS[i]}));
+const REELS=makeGear(['Basic Spincast','Spinning Reel','Baitcaster','Pro Baitcaster','Big Game Reel','Electric Reel','Twin-Speed Reel','Tournament Reel','Titan Winch','Monster Winch'],120,2.0);
+const LINES=makeGear(['Mono 6 lb','Mono 12 lb','Fluorocarbon 20 lb','Braid 30 lb','Braid 50 lb','Braid 80 lb','Braid 130 lb','Kevlar 200 lb','Wire 300 lb','Titan Cable 500 lb'],250,1.9);
+const HOOKS=makeGear(['Rusty Hook','Steel Hook','Sharp Hook','Circle Hook','Treble Hook','Razor Hook','Titanium Hook','Monster Barb Hook'],150,2.2);
+const LURE_COLORS=['#c86a5a','#b0bec5','#cfd8dc','#9ccc65','#ce93d8','#ffd54f','#90a4ae','#4db6ac','#ffb74d','#e57373','#81d4fa','#b388ff'];
+const LURES=makeGear(['Worm','Spinner','Shiny Spoon','Glow Jig','Rainbow Fly','Golden Lure','Steel Striker','Kraken Lure','Thunder Crankbait','Dragon Swimbait','Meteor Jig','Leviathan Lure'],150,1.95,i=>({color:LURE_COLORS[i]}));
+const SINKERS=makeGear(['Split Shot','Egg Sinker','Bullet Weight','Bank Sinker','Tungsten Drop','Torpedo Weight','Jet Sinker','Rocket Sinker'],200,2.1);
+const LIGHTS=makeGear(['No light','Small LED','Bright LED','Dive Torch','Floodlight','Sun Lamp','Lighthouse Beam','Supernova Light'],400,2.1);
+const SONARS=makeGear(['No fish finder','Depth Sounder','Fish Finder','Side-Scan Sonar','3D Live Sonar'],600,3);
+const GLOVES=makeGear(['Bare hands','Cotton Gloves','Rubber Gloves','Grip Gloves','Pro Lip Grips','Iron Grip'],300,2.4);
+const SCENTS=makeGear(['No scent','Fish Oil','Garlic Scent','Shrimp Attractant','Blood Bait','Legendary Chum'],350,2.4);
+const BUCKETS=makeGear(['Small Cooler','Deck Cooler','Big Cooler','Fish Box','Insulated Fish Hold','Ship Hold','Live Well','Cargo Hold','Freezer Room','Fish Factory'],75,2.1,i=>({cap:[5,8,12,18,25,40,55,75,100,140][i]}));
+// all gear in tackle-box order: key in the save, the list, the row label
+const GEAR=[['rod',RODS,'Rod'],['reel',REELS,'Reel'],['line',LINES,'Fishing line'],['hook',HOOKS,'Hook'],['lure',LURES,'Lure'],['sinker',SINKERS,'Sinker'],
+ ['light',LIGHTS,'Lure light'],['sonar',SONARS,'Fish finder'],['gloves',GLOVES,'Landing gloves'],['scent',SCENTS,'Fish scent'],['bucket',BUCKETS,'Cooler']];
+function rodStats(t){return {line:Math.round(35*Math.pow(1.42,t)),strength:1-t*0.035};}
+function reelStats(t){return {speed:1+t*0.13,drag:1+t*0.12};}
+function lineStats(t){return {snap:1+t*0.3,pull:1-t*0.04};}
+function hookStats(t){return {dmg:1+t*0.08,hold:3.2+t*0.5};}
+function lureStats(t){return {rare:1+0.22*t,leg:1+0.33*t,sizeK:Math.max(0.5,1.3-0.08*t)};}
+function sinkerStats(t){return {spd:1+t*0.09};}
+function lightStats(t){return {r:150+t*45,dim:1-t*0.07};}
+function gloveStats(t){return {ring:1+t*0.13,tries:3+Math.floor(t/2)};}
+function scentStats(t){return {r:t*70,spawn:t*2};}
 /*DATA_END*/
 // Hungry customers who visit the Market and pay DOUBLE for the fish they want
 const CUSTOMERS=[
@@ -341,8 +330,8 @@ const lerp=(a,b,t)=>a+(b-a)*t;
 const rand=(a,b)=>a+Math.random()*(b-a);
 const ease=t=>t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
 const fmt=n=>'$'+Math.round(n).toLocaleString('en-US');
-function fmtW(w){return w<1?Math.round(w*1000)+' g':(w<100?w.toFixed(1):Math.round(w))+' kg';}
-function fmtM(m){return (m<10?m.toFixed(1):Math.round(m))+' m';}
+function fmtW(w){const lb=w*2.20462;if(lb<1)return Math.max(1,Math.round(lb*16))+' oz';return (lb<10?lb.toFixed(1):Math.round(lb).toLocaleString('en-US'))+' lb';}
+function fmtM(m){return Math.round(m*3.28084).toLocaleString('en-US')+' ft';}
 function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0)%2147483646+1;}
 function srand(seed){return()=>{seed=seed*16807%2147483647;return (seed-1)/2147483646;};}
 function rr(c,x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
@@ -350,7 +339,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 
 // ---------- save / load ----------
 const KEY='kidFishingAdventure_v1';
-function defaults(){return {money:0,rod:0,bucket:0,lure:0,line:0,light:0,sonar:0,unlocked:['pond'],loc:'pond',fish:[],log:{},muted:false,earned:0,caught:0,escaped:0,seenHelp:false,won:false,order:null,served:0,trophies:{},admin:false,god:false};}
+function defaults(){return {money:0,rod:0,bucket:0,lure:0,line:0,light:0,sonar:0,unlocked:['pond'],loc:'pond',fish:[],log:{},muted:false,earned:0,caught:0,escaped:0,seenHelp:false,won:false,order:null,served:0,trophies:{},admin:false,god:false,reel:0,hook:0,sinker:0,gloves:0,scent:0};}
 function load(){
  const d=defaults();
  try{
@@ -360,7 +349,7 @@ function load(){
     if(k in o&&typeof o[k]===typeof d[k]&&Array.isArray(o[k])===Array.isArray(d[k]))d[k]=o[k];}}}
  }catch(e){}
  d.money=Math.max(0,Math.floor(+d.money||0));
- d.rod=clamp(d.rod|0,0,RODS.length-1);d.bucket=clamp(d.bucket|0,0,BUCKETS.length-1);d.lure=clamp(d.lure|0,0,LURES.length-1);d.line=clamp(d.line|0,0,LINES.length-1);d.light=clamp(d.light|0,0,LIGHTS.length-1);d.sonar=clamp(d.sonar|0,0,SONARS.length-1);
+ d.rod=clamp(d.rod|0,0,RODS.length-1);d.bucket=clamp(d.bucket|0,0,BUCKETS.length-1);d.lure=clamp(d.lure|0,0,LURES.length-1);d.line=clamp(d.line|0,0,LINES.length-1);d.light=clamp(d.light|0,0,LIGHTS.length-1);d.sonar=clamp(d.sonar|0,0,SONARS.length-1);for(const g of GEAR)d[g[0]]=clamp(d[g[0]]|0,0,g[1].length-1);
  d.unlocked=d.unlocked.filter(id=>LMAP[id]);if(d.unlocked.indexOf('pond')<0)d.unlocked.unshift('pond');
  if(!LMAP[d.loc]||d.unlocked.indexOf(d.loc)<0)d.loc='pond';
  d.fish=d.fish.filter(f=>f&&FMAP[f.id]&&typeof f.v==='number');
@@ -547,6 +536,7 @@ function drawFish(c,sp,x,y,L,o){
       c.lineWidth=bh*0.1;c.beginPath();c.moveTo(X(0.66),M(0.66)-bh*0.2);c.quadraticCurveTo(X(0.42),M(0.42)+bh*0.14,X(0.1),M(0.1));c.stroke();}
     else if(type==='squig'){c.lineWidth=Math.max(0.8,bh*0.022);for(let k=0;k<5;k++){c.beginPath();for(let i=0;i<=10;i++){const u=0.68+i*0.026;c.lineTo(X(u),M(u)-bh*0.16+k*bh*0.08+Math.sin(i*1.4+k)*bh*0.02);}c.stroke();}
       const r=srand(hashStr(sp.id+'q'));for(let i=0;i<40;i++){const u=0.08+r()*0.58,yy=lerp(T(u),B(u),0.1+r()*0.8);c.fillRect(X(u),yy,Math.max(0.6,bl*0.006),bh*0.06);}}
+    else if(type==='stripes'){c.lineWidth=Math.max(0.8,bh*0.045);for(let k=0;k<5;k++){c.beginPath();for(let i=0;i<=16;i++){const u=0.05+i*0.05;c.lineTo(X(u),lerp(T(u),B(u),0.14+k*0.13));}c.stroke();}}
     else if(type==='redrear'){const g2=c.createLinearGradient(X(0.55),0,X(0),0);g2.addColorStop(0,'rgba(0,0,0,0)');g2.addColorStop(1,col);c.fillStyle=g2;c.globalAlpha*=0.75;c.fillRect(X(0)-2,-bh,bl*0.55+4,bh*2);c.globalAlpha/=0.75;}
     else if(type==='tiger'){c.lineWidth=Math.max(0.8,bh*0.05);c.lineJoin='round';for(let i=0;i<14;i++){const u=0.08+i*0.055;c.beginPath();c.moveTo(X(u),T(u));c.lineTo(X(u-0.018),lerp(T(u),M(u),0.35));c.lineTo(X(u+0.012),lerp(T(u),M(u),0.7));c.lineTo(X(u-0.008),M(u)-bh*0.04);c.stroke();}}
    };
@@ -623,7 +613,7 @@ function icon(sp,sil){const k=sp.id+(sil?'_s':'');if(iconCache[k])return iconCac
 function fishLen(sp){return clamp(20+Math.log10(sp.maxW*10)*26,18,135);}
 // real-world length from weight (cm)
 function lenCm(sp,w){return Math.max(3,Math.round(Math.cbrt(w*1000/fishP(sp).ld)));}
-function fmtLen(cm){return cm<100?cm+' cm':(cm/100).toFixed(cm<1000?2:1)+' m';}
+function fmtLen(cm){const inch=Math.round(cm/2.54);if(inch<12)return inch+' in';const ft=Math.floor(inch/12),i=inch%12;return ft+' ft'+(i?' '+i+' in':'');}
 // the lower lip of a fish drawn at (0,0) facing right, in drawFish's coordinates
 function lipPt(sp,L){const p=fishP(sp),bl=L*0.8,bh=bl*p.h;return [L*0.11+bl*0.485,bh*0.05];}
 // draw a fish hanging from its lip at (mx,my); ang rotates around the lip
@@ -770,12 +760,14 @@ function spawnFish(sp,o){o=o||{};const s=Lay.s,r0=Math.floor(sp.d[0]*(TER.rows-1
  const fish={sp,x,y,ty:y,dir:Math.random()<0.5?1:-1,vx:0,vy:0,spd:(14+sp.diff*3.5)*s*rand(0.8,1.2),L,t,ph:Math.random()*6,state:'swim',hp,maxHp:hp,hitT:0,fleeT:0,turnT:rand(2,6),bh:L*0.8*p.h};
  G.swim.push(fish);return fish;}
 function initAmbient(){G.swim=[];G.hookedFish=null;G.amb=[];
- G.fishTarget=Math.round(10+Lay.WW*Lay.depthPx/(W*H)*1.3);for(let i=0;i<G.fishTarget;i++){const sp=pickSpecies();if(sp)spawnFish(sp);}spawnBosses();}
+ G.fishTarget=Math.round(10+Lay.WW*Lay.depthPx/(W*H)*1.3+scentStats(S.scent).spawn);for(let i=0;i<G.fishTarget;i++){const sp=pickSpecies();if(sp)spawnFish(sp);}spawnBosses();}
 function updateSwimmers(dt){
  const s=Lay.s;
  for(const f of G.swim){
   f.hitT=Math.max(0,f.hitT-dt);f.fleeT=Math.max(0,f.fleeT-dt);
   if(f.state==='hooked'||f.state==='boss')continue;
+  // fish scent pulls nearby fish toward your lure
+  if(S.scent&&G.lure&&G.state==='lure'&&f.fleeT<=0){const dx=G.lure.x-f.x,dy=G.lure.y-f.y,R=scentStats(S.scent).r*s;if(dx*dx+dy*dy<R*R){f.dir=dx<0?-1:1;f.ty=G.lure.y;}}
   f.turnT-=dt;if(f.turnT<=0){f.turnT=rand(3,8);if(Math.random()<0.4)f.dir*=-1;f.ty=f.y+rand(-2,2)*Lay.C;}
   const sp=f.fleeT>0?f.spd*4:f.spd;f.vx+=(f.dir*sp-f.vx)*Math.min(1,dt*(f.fleeT>0?6:2));
   const y0=Lay.waterY+Math.max(0.02,f.sp.d[0]-0.05)*Lay.depthPx,y1=Lay.waterY+Math.min(1,f.sp.d[1]+0.05)*Lay.depthPx;f.ty=clamp(f.ty,y0,y1);
@@ -838,13 +830,13 @@ function retract(dist){const L=G.lure;while(dist>0){const p=L.path,last=p[p.leng
 function dash(){const L=G.lure;if(!L||L.dashCd>0)return;L.dashT=0.22;L.dashCd=0.7;Snd.zip();}
 function updateLure(dt){
  const L=G.lure,s=Lay.s,ox=L.x,oy=L.y;L.dashCd=Math.max(0,L.dashCd-dt);L.dashT=Math.max(0,L.dashT-dt);
- if(G.holding){retract(dt*(240+45*S.rod)*s);if(L.done){G.state='idle';G.lure=null;Snd.click();return;}}
+ if(G.holding){retract(dt*(240+40*S.reel)*s);if(L.done){G.state='idle';G.lure=null;Snd.click();return;}}
  else{
   let ax=L.x,ay=L.y;const k=G.keys;
   if(k.left||k.right||k.up||k.down){ax=L.x+((k.right?1:0)-(k.left?1:0))*300;ay=L.y+((k.down?1:0)-(k.up?1:0))*300;}
   else if(G.aimW){ax=G.aimW.x;ay=G.aimW.y;}
   const st=G.stick,sm=st?Math.hypot(st.x,st.y):0;let spK=1;if(sm>0.12){ax=L.x+st.x/sm*300;ay=L.y+st.y/sm*300;spK=Math.min(1,sm);}
-  const dx=ax-L.x,dy=ay-L.y,d=Math.hypot(dx,dy),vmax=(190+22*S.lure)*s*spK*(L.dashT>0?2.4:1);
+  const dx=ax-L.x,dy=ay-L.y,d=Math.hypot(dx,dy),vmax=(190+12*S.lure)*sinkerStats(S.sinker).spd*s*spK*(L.dashT>0?2.4:1);
   if(d>1){const step=Math.min(d,Math.min(vmax,d*7)*dt);moveLure(L.x+dx/d*step,L.y+dy/d*step);}
   else moveLure(L.x,L.y+6*s*dt);
  }
@@ -860,7 +852,7 @@ function checkStrikes(){const L=G.lure,s=Lay.s;
   const rel=Math.hypot(L.vx-f.vx,L.vy-f.vy);if(rel<70*s)continue;
   f.hitT=0.45;f.dir=L.x<f.x?1:-1;f.fleeT=1;f.vx=f.dir*f.spd*5;
   if(f.sp.lure>S.lure){floatText(f.x,f.y-f.bh,'Too strong for your lure','#ffb08a');Snd.error();continue;}
-  const dmg=Math.max(1,Math.round((7+S.lure*4)*clamp(rel/(200*s),0.5,2.2)*(L.dashT>0?1.25:1)));f.hp-=dmg;
+  const dmg=Math.max(1,Math.round((7+S.lure*4)*hookStats(S.hook).dmg*clamp(rel/(200*s),0.5,2.2)*(L.dashT>0?1.25:1)));f.hp-=dmg;
   floatText(f.x,f.y-f.bh*0.8,'-'+dmg,'#ffffff');Snd.hit();
   for(let i=0;i<6;i++)G.parts.push({t:'bub',x:L.x,y:L.y,vy:rand(20,70),r:rand(1,3)*s,life:1.2,max:1.2});
   if(f.hp<=0){f.hp=0;hookFish(f);return;}}
@@ -870,18 +862,17 @@ function checkStrikes(){const L=G.lure,s=Lay.s;
 // move: frenzy (speeds up at half health), armor (hit it from behind), silt (mud cloud ambush),
 // breathe (armored, but dazed after gulping air), lunge (huge mouth lunges)
 const BOSSES={
- redtail:{loc:'amazon',ch:1,hp:700,rod:4,lure:4,spd:1.0,charge:520,lineDmg:15,move:'frenzy',scale:1.7,tip:'It speeds up when it gets angry. Dodge, then hit it while it recovers.'},
- gar:{loc:'lake',ch:-1,hp:800,rod:4,lure:5,spd:1.25,charge:640,lineDmg:14,move:'armor',scale:1.5,tip:'Its head is armored. Hit it from behind!'},
- wels:{loc:'river',ch:-1,hp:900,rod:5,lure:5,spd:0.9,charge:560,lineDmg:18,move:'silt',scale:1.6,tip:'It hides in clouds of mud. Watch for bubbles before it charges.'},
- arapaima:{loc:'amazon',ch:2,hp:1000,rod:6,lure:6,spd:1.0,charge:600,lineDmg:19,move:'breathe',scale:1.7,tip:'Its scales are like armor. Hit it hard when it gulps air.'},
- piraiba:{loc:'amazon',ch:3,hp:1300,rod:7,lure:7,spd:1.1,charge:620,lineDmg:25,move:'lunge',scale:1.9,tip:'Its huge mouth lunges far. Keep your distance until it misses.'}
-};
-function bossReady(B){return S.rod>=B.rod&&S.lure>=B.lure;}
+ redtail:{sp:'redtail',loc:'amazon',ch:1,hp:1500,rod:7,lure:7,spd:1.05,charge:560,lineDmg:22,move:'frenzy',scale:1.7,tip:'It speeds up when it gets angry. Dodge, then hit it while it recovers.'},
+ gar:{sp:'gar',loc:'trinity',ch:-1,hp:1700,rod:7,lure:8,spd:1.3,charge:680,lineDmg:21,move:'armor',scale:1.6,tip:'A giant 11-foot gar with an armored head. Hit it from behind!'},
+ wels:{sp:'wels',loc:'river',ch:-1,hp:1900,rod:8,lure:8,spd:0.95,charge:600,lineDmg:27,move:'silt',scale:1.6,tip:'It hides in clouds of mud. Watch for bubbles before it charges.'},
+ arapaima:{sp:'arapaima',loc:'amazon',ch:2,hp:2200,rod:9,lure:9,spd:1.05,charge:640,lineDmg:28,move:'breathe',scale:1.7,tip:'Its scales are like armor. Hit it hard when it gulps air.'},
+ piraiba:{sp:'piraiba',loc:'amazon',ch:3,hp:2800,rod:11,lure:11,spd:1.15,charge:660,lineDmg:32,move:'lunge',scale:1.9,tip:'Its huge mouth lunges far. Keep your distance until it misses.'}
+};function bossReady(B){return S.rod>=B.rod&&S.lure>=B.lure;}
 function bossNeeds(B){return 'level '+(B.rod+1)+' rod and level '+(B.lure+1)+' lure';}
 function spawnBosses(){
  G.bosses=[];if(!TER.ch)return;
  for(const id in BOSSES){const B=BOSSES[id];if(B.loc!==S.loc||G.bossDone[id])continue;const c=TER.ch[B.ch<0?TER.ch.length-1:B.ch];if(!c)continue;
-  const sp=FMAP[id],s=Lay.s,t=rand(0.75,1),L=fishLen(sp)*s*B.scale*(0.9+0.2*t),p=fishP(sp),x=c[0]*Lay.C,y=Lay.waterY+c[1]*Lay.C;
+  const sp=FMAP[B.sp],s=Lay.s,t=rand(0.75,1),L=fishLen(sp)*s*B.scale*(0.9+0.2*t),p=fishP(sp),x=c[0]*Lay.C,y=Lay.waterY+c[1]*Lay.C;
   const f={sp,x,y,ty:y,dir:1,vx:0,vy:0,spd:42*s*B.spd,L,t,ph:Math.random()*6,state:'boss',hp:B.hp,maxHp:B.hp,hitT:0,fleeT:0,turnT:0,bh:L*0.8*p.h,boss:B,id};
   G.swim.push(f);
   G.bosses.push({f,B,id,lx:x,ly:y,R:Math.max(L*1.15,Lay.C*8),mode:'patrol',t:0,cd:rand(2,3),ang:Math.random()*6,active:false,phase:1,tx:x,ty:y,silt:0,dazed:0,breathT:rand(8,12)});}
@@ -895,8 +886,11 @@ function updateBosses(dt){
   const dl=L&&G.state==='lure'?Math.hypot(L.x-b.lx,L.y-b.ly):1e9;
   if(dl<b.R*1.4&&!b.active){b.active=true;b.cd=1.5;G.bossBanner={name:f.sp.name,t:2.8,ok:bossReady(B),needs:bossNeeds(B),tip:B.tip};Snd.boss();}
   if(b.active&&dl>b.R*2.4){b.active=false;b.mode='patrol';}
-  if(b.phase===1&&f.hp<f.maxHp*0.5){b.phase=2;floatText(f.x,f.y-f.bh,'ENRAGED!','#ff8a6b');Snd.boss();}
-  const rage=b.phase===2?1.25:1,fr=B.move==='frenzy'&&b.phase===2?1.3:1;
+  if(b.phase===1&&f.hp<f.maxHp*0.6){b.phase=2;floatText(f.x,f.y-f.bh,'ENRAGED!','#ff8a6b');Snd.boss();}
+  if(b.phase===2&&f.hp<f.maxHp*0.25){b.phase=3;floatText(f.x,f.y-f.bh,'FURIOUS!','#ff5a4a');Snd.boss();G.shake=0.5;}
+  // a boss you swim away from heals up
+  if(!b.active&&f.hp<f.maxHp)f.hp=Math.min(f.maxHp,f.hp+f.maxHp*0.03*dt);
+  const rage=b.phase===3?1.5:b.phase===2?1.25:1,fr=B.move==='frenzy'&&b.phase>=2?1.3:1;
   let tx=f.x,ty=f.y,v=f.spd*rage*fr;
   if(b.dazed>0){v=f.spd*0.15;tx=f.x+f.dir*5;}
   else if(b.mode==='patrol'){b.ang+=dt*0.35*rage*fr;tx=b.lx+Math.cos(b.ang)*b.R*0.45;ty=b.ly+Math.sin(b.ang*1.3)*b.R*0.2;
@@ -905,9 +899,9 @@ function updateBosses(dt){
     else if(B.move==='silt'&&b.silt<=0&&Math.random()<0.5){b.mode='silt';b.t=0;b.silt=5;floatText(f.x,f.y-f.bh,'It stirs up the mud!','#d9c49a');}
     else{b.mode='tell';b.t=0;}}}
   else if(b.mode==='tell'){v=0;if(L)f.dir=L.x<f.x?-1:1;f.x+=Math.sin(b.t*60)*1.5*s;
-   if(b.t>(b.phase===2?0.55:0.85)){b.mode='charge';b.t=0;b.tx=L?L.x:f.x;b.ty=L?L.y:f.y;const ex=b.tx-f.x,ey=b.ty-f.y,ed=Math.hypot(ex,ey)||1;b.tx+=ex/ed*60*s;b.ty+=ey/ed*60*s;Snd.zip();}}
+   if(b.t>(b.phase===3?0.4:b.phase===2?0.55:0.75)){b.mode='charge';b.t=0;b.tx=L?L.x:f.x;b.ty=L?L.y:f.y;const ex=b.tx-f.x,ey=b.ty-f.y,ed=Math.hypot(ex,ey)||1;b.tx+=ex/ed*60*s;b.ty+=ey/ed*60*s;Snd.zip();}}
   else if(b.mode==='charge'){tx=b.tx;ty=b.ty;v=B.charge*s*rage*(B.move==='lunge'?1.15:1);if(b.t>1||Math.hypot(tx-f.x,ty-f.y)<12*s){b.mode='recover';b.t=0;}}
-  else if(b.mode==='recover'){v=f.spd*0.25;tx=f.x+f.dir*20;if(b.t>(b.phase===2?0.75:1.15)){b.mode='patrol';b.cd=rand(1.8,3.2)/(rage*fr);}}
+  else if(b.mode==='recover'){v=f.spd*0.25;tx=f.x+f.dir*20;if(b.t>(b.phase===2?0.75:1.15)){b.mode='patrol';b.cd=rand(1.3,2.5)/(rage*fr);}}
   else if(b.mode==='silt'){tx=b.lx;ty=b.ly;if(b.t>1.3){b.mode='tell';b.t=0;}}
   else if(b.mode==='breathe'){tx=b.lx;ty=b.ly-b.R*0.7;v=f.spd*1.6;
    if(Math.abs(f.y-ty)<16*s||b.t>3.5){b.dazed=3.2;b.breathT=rand(10,14);b.mode='patrol';b.cd=3.4;floatText(f.x,f.y-f.bh,'It gulps air! Hit it now!','#9fe3b0');}}
@@ -920,9 +914,9 @@ function updateBosses(dt){
   else{f.vx=0;f.vy=0;}
   f.fleeT=b.mode==='charge'||b.mode==='tell'?0.2:0;
   // a charging boss that hits your lure damages your line
-  if(L&&G.state==='lure'&&!L.hitCd&&(b.mode==='charge'||(B.move==='frenzy'&&b.phase===2&&b.mode==='patrol'&&b.active))){
+  if(L&&G.state==='lure'&&!L.hitCd&&(b.mode==='charge'||(B.move==='frenzy'&&b.phase>=2&&b.mode==='patrol'&&b.active))){
    const hx=(L.x-f.x)*f.dir,hy=L.y-f.y,ex=f.L*0.55*(B.move==='lunge'?1.25:1),ey=f.bh*0.7+6*s;
-   if(hx*hx/(ex*ex)+hy*hy/(ey*ey)<1){const dmg=Math.round(B.lineDmg*(b.phase===2?1.3:1)*(B.move==='lunge'&&b.mode==='charge'?1.4:1));
+   if(hx*hx/(ex*ex)+hy*hy/(ey*ey)<1){const dmg=Math.round(B.lineDmg*(b.phase>=2?1.3:1)*(b.phase===3?1.2:1)*(B.move==='lunge'&&b.mode==='charge'?1.4:1));
     if(!S.god)L.lineHp-=dmg;L.hitCd=0.9;floatText(L.x,L.y-22*s,'Line -'+dmg,'#ff9a8a');Snd.hit();G.shake=0.3;
     const kx=Math.sign(L.x-f.x)||1;moveLure(L.x+kx*60*s,L.y-30*s);
     if(L.lineHp<=0){lineBroken(f);return;}
@@ -942,13 +936,13 @@ function bossStrikes(){
  for(const b of G.bosses){const f=b.f,B=b.B;if(f.state!=='boss'||f.hitT>0)continue;
   const dx=(L.x-f.x)*f.dir,dy=L.y-f.y,ex=f.L*0.5,ey=f.bh*0.6+4*s;if(dx*dx/(ex*ex)+dy*dy/(ey*ey)>1)continue;
   const rel=Math.hypot(L.vx-f.vx,L.vy-f.vy);if(rel<70*s)continue;
-  f.hitT=0.6;
+  f.hitT=0.7;
   if(!bossReady(B)){floatText(f.x,f.y-f.bh,'Your gear is too weak! Needs a '+bossNeeds(B),'#ffb08a');Snd.error();continue;}
   let k=1;
   if(B.move==='armor'&&dx>0){k=0.25;floatText(f.x,f.y-f.bh*1.2,'Armored head! Hit it from behind','#cfd8dc');}
   if(B.move==='breathe')k=b.dazed>0?2:0.45;
   if(b.mode==='recover')k*=1.5;if(b.dazed>0&&B.move!=='breathe')k*=1.5;
-  const dmg=Math.max(1,Math.round((7+S.lure*4)*clamp(rel/(200*s),0.5,1.6)*(L.dashT>0?1.25:1)*k));f.hp-=dmg;
+  const dmg=Math.max(1,Math.round((7+S.lure*4)*hookStats(S.hook).dmg*clamp(rel/(200*s),0.5,1.6)*(L.dashT>0?1.25:1)*k*0.65));f.hp-=dmg;
   floatText(f.x,f.y-f.bh*0.8,'-'+dmg,k>1?'#ffe08a':'#ffffff');Snd.hit();
   for(let i=0;i<8;i++)G.parts.push({t:'bub',x:L.x,y:L.y,vy:rand(20,70),r:rand(1,3)*s,life:1.2,max:1.2});
   if(f.hp<=0){f.hp=0;b.active=false;G.bossBanner=null;hookFish(f);return;}}
@@ -959,9 +953,9 @@ function drawBossUI(){
  if(b&&(G.state==='lure'||G.state==='reeling')){const f=b.f,w=Math.min(440,W-40),x=(W-w)/2,y=Math.max(150,Math.min(H*0.24,170));
   ctx.fillStyle='rgba(8,14,20,0.72)';rr(ctx,x-10,y-24,w+20,L?62:44,10);ctx.fill();
   ctx.font='700 '+Math.round(16*Math.max(s,0.85))+'px Barlow Condensed, sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle='#ff8a6b';
-  ctx.fillText('BOSS',x,y-11);ctx.fillStyle='#e8eef1';ctx.fillText(f.sp.name.toUpperCase()+(b.phase===2?'  ·  ENRAGED':''),x+46,y-11);
-  ctx.fillStyle='rgba(255,255,255,0.12)';rr(ctx,x,y,w,10,5);ctx.fill();const k=f.hp/f.maxHp;ctx.fillStyle=b.phase===2?'#ef6a5b':'#e39a3c';rr(ctx,x,y,w*k,10,5);ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,0.5)';ctx.fillRect(x+w*0.5-1,y-2,2,14);
+  ctx.fillText('BOSS',x,y-11);ctx.fillStyle='#e8eef1';ctx.fillText(f.sp.name.toUpperCase()+(b.phase===3?'  ·  FURIOUS':b.phase===2?'  ·  ENRAGED':''),x+46,y-11);
+  ctx.fillStyle='rgba(255,255,255,0.12)';rr(ctx,x,y,w,10,5);ctx.fill();const k=f.hp/f.maxHp;ctx.fillStyle=b.phase>=2?'#ef6a5b':'#e39a3c';rr(ctx,x,y,w*k,10,5);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.5)';ctx.fillRect(x+w*0.6-1,y-2,2,14);ctx.fillRect(x+w*0.25-1,y-2,2,14);
   if(L&&L.lineMax){ctx.font='600 11px Barlow, sans-serif';ctx.fillStyle='rgba(232,238,241,0.75)';ctx.fillText('YOUR LINE',x,y+24);const lk=clamp(L.lineHp/L.lineMax,0,1);
    ctx.fillStyle='rgba(255,255,255,0.12)';rr(ctx,x+70,y+20,w-70,8,4);ctx.fill();ctx.fillStyle=lk>0.5?'#7fb7d6':lk>0.25?'#f2c14e':'#ef6a5b';rr(ctx,x+70,y+20,(w-70)*lk,8,4);ctx.fill();}}
  const bb=G.bossBanner;if(bb){const a=clamp(bb.t/0.5,0,1)*clamp((2.8-bb.t)/0.3,0,1);ctx.save();ctx.globalAlpha=a;ctx.textAlign='center';ctx.textBaseline='middle';
@@ -972,47 +966,54 @@ function drawBossUI(){
   ctx.fillText(bb.ok?bb.tip:'Your gear is too weak. You need a '+bb.needs+'.',W/2,H*0.565);ctx.restore();}
 }
 
-function bossTrophies(){let h='<h3>Boss trophies</h3><div class="grid">';for(const id in BOSSES){const B=BOSSES[id],sp=FMAP[id],n=(S.trophies||{})[id]||0;
+function bossTrophies(){let h='<h3>Boss trophies</h3><div class="grid">';for(const id in BOSSES){const B=BOSSES[id],sp=FMAP[B.sp],n=(S.trophies||{})[id]||0;
  h+='<div class="card'+(n?'':' unk')+'"><img alt="" src="'+icon(sp,!n)+'"><b>'+esc(sp.name)+'</b>'+esc(LMAP[B.loc].name)+'<br>'+(n?'🏆 Defeated ×'+n:'Needs a '+bossNeeds(B))+'</div>';}return h+'</div>';}
 // ---------- the fight: reel the weakened fish back along your line ----------
 function pullInput(){return G.btnPull||G.dragPull||((G.keys.right?1:0)-(G.keys.left?1:0));}
-function hookFish(f){G.hookedFish=f;f.state='hooked';G.hooked=rollCatch(f.sp,f.t);G.hooked.boss=!!f.boss;if(f.boss)G.hooked.value*=3;G.holding=false;Snd.bite();
- const rs=rodStats(S.rod),d=f.sp.diff+f.t*1.2+wxMods().diff+(f.boss?2.5:0);G.state='reeling';
- G.fight={d,ten:0.3,stam:f.boss?0.75:0.55,strain:0,idle:0,phase:'rest',pt:rand(0.6,1.2),dir:1,str:1,counter:0,pull:0.22+d*0.065,abs:rs.strength*lineStats(S.line).pull,reel:rs.reel,startLen:Math.max(1,lineUsed()),dist:1,clickT:0,dragT:0,eff:0,jumpT:-1};
- toast('Fish on! Reel it in.','gold',1800);}
+function hookFish(f){G.hookedFish=f;f.state='hooked';G.hooked=rollCatch(f.sp,f.t);G.hooked.boss=!!f.boss;G.hooked.bossId=f.id;if(f.boss)G.hooked.value*=3;G.holding=false;Snd.bite();
+ const rs=rodStats(S.rod),d=f.sp.diff+f.t*1.2+wxMods().diff+(f.boss?4:0),lb=G.hooked.w*2.20462;G.state='reeling';
+ G.fight={d,ten:0.3,stam:f.boss?1:0.55,strain:0,idle:0,phase:'rest',pt:rand(0.6,1.2),dir:1,dv:0,str:1,counter:0,pull:0.22+d*0.065,abs:rs.strength*lineStats(S.line).pull,reel:reelStats(S.reel).speed,
+  big:clamp(Math.log10(lb+1)/2.6,0,1)*(f.boss?1.25:1),startLen:Math.max(1,lineUsed()),dist:1,clickT:0,dragT:0,eff:0,jumpT:-1,out:0};
+ if(G.fight.big>0.45){G.fight.phase='rest';G.fight.pt=0.15;}
+ toast(f.boss?'The boss is hooked! Hold on tight.':'Fish on! Reel it in.','gold',1800);}
+// the line takes the shortest way back to you around the rocks, so a hooked fish doesn't have to follow your trail
+function straighten(){const L=G.lure,p=L.path;while(p.length>=2&&clearSeg(p[p.length-2],{x:L.x,y:L.y})){const a=p[p.length-2],b=p[p.length-1];L.base-=Math.hypot(b.x-a.x,b.y-a.y);p.pop();}}
 function updateFight(dt){
  const F=G.fight,L=G.lure,reel=G.holding,pd=pullInput(),s=Lay.s,f=G.hookedFish,ls=lineStats(S.line);
  F.pt-=dt;
- if(F.pt<=0){if(F.phase==='rest'){F.phase='run';F.dir=Math.random()<0.5?-1:1;F.str=rand(0.8,1.15)*(0.55+0.45*F.stam);F.pt=rand(0.9,1.8)*(0.6+0.6*F.stam);Snd.zip();}
+ if(F.pt<=0){if(F.phase==='rest'){F.phase='run';F.dir=Math.random()<0.5?-1:1;F.dv=rand(-0.35,0.6);F.str=rand(0.8,1.15)*(0.55+0.45*F.stam);F.pt=rand(0.9,1.8)*(0.6+0.6*F.stam)*(1+F.big);Snd.zip();}
   else{F.phase='rest';F.pt=(rand(1.0,2.0)+(1-F.stam)*2.2)/(1+F.d*0.04);}}
  const run=F.phase==='run',want=run?(pd===-F.dir?1:pd===F.dir?-0.6:0):0;F.counter+=(want-F.counter)*Math.min(1,dt*7);
  let eff=F.pull*(0.3+0.7*F.stam)*F.abs*(run?F.str:0.22);if(run)eff*=1-0.55*Math.max(0,F.counter)+0.4*Math.max(0,-F.counter);F.eff=eff;
- let tT=reel?0.3+eff:0.12+eff*0.5;if(L.atMax&&run)tT+=0.3;
+ // big fish run hard enough to pull line off the reel; a better reel (drag) slows them down
+ const pay=run?(40+520*F.big)*s*F.str*(1-0.45*Math.max(0,F.counter))*(0.4+0.6*F.stam)/reelStats(S.reel).drag:0;
+ if(pay>0){const before=lineUsed();if(!moveLure(L.x+F.dir*pay*dt,L.y+F.dv*pay*0.6*dt)&&!L.atMax){F.dir*=-1;F.dv=-F.dv;}
+  F.out+=Math.max(0,lineUsed()-before);F.dragT-=dt;if(F.dragT<=0){F.dragT=0.05;Snd.drag();}}
+ let tT=reel?0.3+eff+(run?0.5*F.big:0):0.12+eff*0.5;if(L.atMax&&run)tT+=0.45;
  F.ten+=(tT-F.ten)*Math.min(1,dt*(tT>F.ten?6:4));
  if(F.ten>0.9)F.strain+=dt*(1+(F.ten-0.9)*8)/ls.snap;else F.strain=Math.max(0,F.strain-dt*0.8);
- if(F.strain>=1&&!S.god){escapeFish('snap');return;}
+ if(F.strain>=1&&!S.god){escapeFish(L.atMax?'spool':'snap');return;}
  const effN=clamp(eff,0,1.1);
- if(reel){retract(dt*125*s*F.reel*Math.max(0.05,1.1-0.85*effN)*(1+0.6*(1-F.stam))/(1+F.d*0.12));F.idle=0;F.clickT-=dt;if(F.clickT<=0){F.clickT=0.08;Snd.tick();}}
- else{if(run){const v=eff*110*s*(F.counter>0.3?0.45:1);moveLure(L.x+F.dir*v*dt,L.y+F.str*14*s*dt);F.dragT-=dt;if(eff>0.2&&F.dragT<=0){F.dragT=0.06;Snd.drag();}}
-  F.idle=run?Math.max(0,F.idle-dt):F.idle+dt;}
- if(F.idle>3.2&&!S.god){escapeFish('shake');return;}
+ if(reel){retract(dt*125*s*F.reel*Math.max(0.05,1.1-0.85*effN)*(1+0.6*(1-F.stam))/(1+F.d*0.12)/(1+F.big*1.8)*(run?0.2:1));F.idle=0;F.clickT-=dt;if(F.clickT<=0){F.clickT=0.08;Snd.tick();}}
+ else F.idle=run?Math.max(0,F.idle-dt):F.idle+dt;
+ if(F.idle>hookStats(S.hook).hold&&!S.god){escapeFish('shake');return;}
  const drain=run?0.14*(0.5+0.5*Math.max(0,F.counter)+(reel?0.3:0)):(reel?0.03:-0.015);
  F.stam=clamp(F.stam-drain*dt/(1+F.d*0.075),0,1);
+ if(!L.done)straighten();
  F.dist=clamp(lineUsed()/F.startLen,0,1);
  const toward=L.path[L.path.length-1],fd=run?F.dir:(toward.x<L.x?-1:1);f.dir=fd;f.x=L.x-fd*f.L*0.45;f.y=L.y;
  if(Math.random()<dt*(run?6:2))G.parts.push({t:'bub',x:L.x,y:L.y,vy:rand(40,80),r:rand(2,4)*s,life:2,max:2});
  if(L.done)startLanding();
-}
-// ---------- landing: grab the fish by the lip at the side of the boat ----------
+}// ---------- landing: grab the fish by the lip at the side of the boat ----------
 function startLanding(){
  const F=G.fight,h=G.hooked;G.state='landing';G.holding=false;G.parts=[];
- G.land={t:0,tries:3,wild:0.3+0.7*F.stam,d:F.d,missT:0,grabT:-1,cm:lenCm(h.sp,h.w),hand:{x:W*0.8,y:H*0.3},msg:'',msgT:0};
+ G.land={t:0,tries:Math.max(1,gloveStats(S.gloves).tries-(h.boss?2:0)),wild:0.3+0.7*F.stam,d:F.d,missT:0,grabT:-1,cm:lenCm(h.sp,h.w),hand:{x:W*0.8,y:H*0.3},msg:'',msgT:0};
  Snd.splash();
 }
 function landGeom(){
  const Ld=G.land,sp=G.hooked.sp,p=fishP(sp),s=Lay.s,ext=(p.bill||0)*0.8,surf=H*0.6;
  const ppc=Math.min(5*s,W*0.55/Ld.cm,H*1.3/Ld.cm),L=Ld.cm*ppc/(1.06+ext);
- const hs=clamp(ppc*9/38,0.42,1.25),R=Math.max(16,(34-Ld.d*1.6)*s)*(Ld.d<3?1.3:1);
+ const hs=clamp(ppc*9/38,0.42,1.25),R=Math.max(16,(34-Ld.d*1.6)*s)*(Ld.d<3?1.3:1)*gloveStats(S.gloves).ring;
  if(Ld.grabT>=0){const u=ease(clamp(Ld.grabT/0.9,0,1)),ty=clamp(H*0.5-L*0.55,56*s,H*0.35);
   return {mx:lerp(Ld.gx,W*0.5,u),my:lerp(Ld.gy,ty,u),ang:lerp(Ld.gAng,-Math.PI/2,u),wig:Math.sin(Ld.t*12)*0.35*(1-u*0.6),L,R,hs,surf};}
  const t=Ld.t,burst=0.35+0.65*(0.5+0.5*Math.sin(t*1.25)),A=Ld.wild*burst*(Ld.missT>0?1.6:1);
@@ -1041,7 +1042,7 @@ function catchFish(){
  if(G.hookedFish){const i=G.swim.indexOf(G.hookedFish);if(i>=0)G.swim.splice(i,1);G.hookedFish=null;}
  S.log[id]={count:(prev?prev.count:0)+1,best:Math.max(prev?prev.best:0,h.w)};
  S.fish.push({id,w:h.w,v:h.value});S.caught++;
- if(h.boss){S.trophies[id]=(S.trophies[id]||0)+1;G.bossDone[id]=true;G.bosses=(G.bosses||[]).filter(b=>b.id!==id);}
+ if(h.boss){const bid=h.bossId;S.trophies[bid]=(S.trophies[bid]||0)+1;G.bossDone[bid]=true;G.bosses=(G.bosses||[]).filter(b=>b.id!==bid);}
  if(!S.won&&Object.keys(S.log).length>=FISH.length){S.won=true;G.pendingWin=true;}
  save();
  G.state='caught';G.holding=false;G.fight=null;G.land=null;G.lure=null;G.parts=[];
@@ -1053,6 +1054,7 @@ function escapeFish(reason){
  const h=G.hooked,L=G.lure;G.state='escaped';G.escT=2.6;S.escaped++;save();releaseHooked();G.fight=null;G.land=null;G.holding=false;
  const r=h.sp.rarity,n=(r==='legendary'?'LEGENDARY ':r==='rare'?'rare ':'')+h.sp.name;
  G.escMsg=reason==='snap'?'Snap! The line broke and the '+n+' got away with your lure. Let go of the reel when the line turns red.':
+  reason==='spool'?'The '+n+' pulled all the line off your reel! A better reel and a longer-line rod help with big fish.':
   reason==='shake'?'The '+n+' threw the hook. Keep reeling when it rests.':
   reason==='boat'?'The '+n+' wiggled out of your hand at the boat. So close!':'The '+n+' got away.';
  if(reason==='snap')Snd.snap();else Snd.escape();
@@ -1065,7 +1067,7 @@ function updateSail(dt){
  const sl=G.sail;sl.t+=dt;
  const b=boatPos();if(Math.random()<dt*25)G.parts.push({t:'drop',x:b.x-Lay.boatL*0.55,y:Lay.waterY,vx:rand(-80,-20),vy:rand(-90,-30),life:0.6,max:0.6,r:rand(1.5,3)*Lay.s});
  if(!sl.switched&&sl.t>=1.3){sl.switched=true;S.loc=sl.to;save();G.parts=[];sceneCache.key='';G.bossDone={};buildWorld();initAmbient();rollWeather(false);updateHUD();}
- if(sl.t>=2.8){G.sail=null;G.state='idle';const w=WXT[WX.type];toast('Welcome to '+curLoc().name+'. '+w.e+' '+w.n+' today.','good',3200);Snd.buy();}
+ if(sl.t>=2.8){G.sail=null;G.state='idle';const w=WXT[WX.type];toast('Welcome to '+curLoc().name+'. '+w.e+' '+w.n+' today.','good',3200);Snd.buy();const nh=newHere();if(nh)setTimeout(()=>toast('The tackle box here sells '+nh+' new upgrade'+(nh>1?'s':'')+'!','gold',3600),1200);}
 }
 // ---------- particles ----------
 function splash(x,y,n,big){big=big||1;for(let i=0;i<n;i++)G.parts.push({t:'drop',x,y,vx:rand(-70,70)*big,vy:rand(-170,-60)*big,life:0.8,max:0.8,r:rand(1.5,3.5)*Lay.s});
@@ -1204,6 +1206,9 @@ function paintFar(x){
   conifers(x,32,wy-3,wy*0.06,wy*0.13,'#273a33',false,2.5);x.fillStyle='#2c3a2e';x.fillRect(0,wy-3,W,4);}
  else if(id==='frozen'){mountains(x,41,wy,wy*0.55,wy*0.3,'#5d7189',wy*0.7,mixC(haze,'#8fb0cf',0.4));
   conifers(x,42,wy-4,wy*0.08,wy*0.16,'#1d3a36',true,3);x.fillStyle='#e9f1f6';x.fillRect(0,wy-5,W,6);x.fillStyle='rgba(160,190,215,0.6)';x.fillRect(0,wy-1,W,1.5);}
+ else if(id==='trinity'){fillRidge(x,61,wy,wy*0.86,wy*0.03,0.5,mixC('#9aa57a',haze,0.55),mixC('#8a9a6a',haze,0.4));canopy(x,62,wy-wy*0.02,wy*0.15,'#5f7d3c');
+  const bx0=W*0.08,bx1=W*0.55,by=wy-wy*0.2;x.fillStyle=mixC('#8b8f93',haze,0.45);x.fillRect(bx0,by,bx1-bx0,wy*0.025);for(let i=0;i<=6;i++){const px=bx0+(bx1-bx0)*i/6;x.fillRect(px-2*s,by,4*s,wy*0.2);}
+  x.fillStyle='#8a7a52';x.fillRect(0,wy-5,W,6);}
  else if(id==='amazon'){fillRidge(x,51,wy,wy*0.72,wy*0.05,0.5,mixC('#5f7d5a',haze,0.55),mixC('#4f6e48',haze,0.4));canopy(x,52,wy-wy*0.03,wy*0.26,'#3d5e2e');
   const r=srand(54);for(let i=0;i<7;i++){const px=r()*W,hh=wy*(0.3+r()*0.12);x.fillStyle='#4a3b2a';x.fillRect(px-2*s,wy-hh,4*s,hh);x.fillStyle=i%2?'#355428':'#41632f';x.beginPath();x.ellipse(px,wy-hh,22*s+r()*14*s,9*s,0,0,7);x.fill();}
   canopy(x,53,wy-2,wy*0.15,'#2c4a22');x.fillStyle='#5a4630';x.fillRect(0,wy-4,W,5);}
@@ -1304,7 +1309,7 @@ function rockPattern(){if(rockPatC)return ctx.createPattern(rockPatC,'repeat');c
  for(let i=0;i<900;i++){const a=r();x.fillStyle=a<0.5?'rgba(255,255,255,'+(0.04+r()*0.08)+')':'rgba(0,0,0,'+(0.08+r()*0.15)+')';const w=1+r()*5;x.beginPath();x.ellipse(r()*n,r()*n,w,w*(0.5+r()*0.5),r()*3,0,7);x.fill();}
  x.strokeStyle='rgba(0,0,0,0.18)';x.lineWidth=1;for(let i=0;i<10;i++){let px=r()*n,py=r()*n;x.beginPath();x.moveTo(px,py);for(let k=0;k<5;k++){px+=(r()-0.5)*26;py+=(r()-0.3)*20;x.lineTo(px,py);}x.stroke();}
  rockPatC=c;return ctx.createPattern(c,'repeat');}
-const ROCK={pond:['#6a5a42','#2b241b'],river:['#7a7a72','#2c2d2b'],lake:['#5a5650','#1d1c1a'],frozen:['#6f8397','#1e2a36'],amazon:['#6b5638','#21170c'],reef:['#c9b58a','#3b3426'],deep:['#3a4250','#0b0e14']};
+const ROCK={pond:['#6a5a42','#2b241b'],river:['#7a7a72','#2c2d2b'],lake:['#5a5650','#1d1c1a'],frozen:['#6f8397','#1e2a36'],amazon:['#6b5638','#21170c'],trinity:['#7a6a4a','#262014'],reef:['#c9b58a','#3b3426'],deep:['#3a4250','#0b0e14']};
 function drawTerrain(){
  const C=Lay.C,s=Lay.s,wy=Lay.waterY,g=TER.g,cols=TER.cols,T=G.time;if(!g)return;
  const c0=Math.max(0,Math.floor(CAM.x/C)-1),c1=Math.min(cols-1,Math.ceil((CAM.x+W)/C)+1),r0=Math.max(0,Math.floor((CAM.y-wy)/C)-1),r1=Math.min(TER.rows-1,Math.ceil((CAM.y+H-wy)/C)+1);
@@ -1314,7 +1319,7 @@ function drawTerrain(){
  ctx.clip();
  const rc=ROCK[S.loc],rg=ctx.createLinearGradient(0,wy,0,Lay.WH);rg.addColorStop(0,rc[0]);rg.addColorStop(1,rc[1]);ctx.fillStyle=rg;ctx.fillRect(CAM.x,CAM.y,W,H);
  ctx.globalAlpha=0.7;ctx.fillStyle=rockPattern();ctx.fillRect(CAM.x,CAM.y,W,H);ctx.globalAlpha=1;
- const sed={pond:'rgba(110,95,60,0.9)',river:'rgba(140,135,120,0.8)',lake:'rgba(90,85,70,0.85)',frozen:'rgba(200,215,225,0.7)',amazon:'rgba(120,95,55,0.9)',reef:'rgba(235,220,180,0.9)',deep:'rgba(60,66,78,0.8)'}[S.loc];
+ const sed={pond:'rgba(110,95,60,0.9)',river:'rgba(140,135,120,0.8)',lake:'rgba(90,85,70,0.85)',frozen:'rgba(200,215,225,0.7)',amazon:'rgba(120,95,55,0.9)',trinity:'rgba(140,120,80,0.85)',reef:'rgba(235,220,180,0.9)',deep:'rgba(60,66,78,0.8)'}[S.loc];
  ctx.fillStyle=sed;ctx.beginPath();for(let r=Math.max(1,r0);r<=r1;r++)for(let c=c0;c<=c1;c++)if(g[r*cols+c]&&!g[(r-1)*cols+c]){const ex=(c+0.5)*C,ey=wy+r*C-C*0.05;ctx.moveTo(ex+C*0.85,ey);ctx.ellipse(ex,ey,C*0.85,C*0.2,0,0,7);}ctx.fill();
  ctx.restore();
  // plants and coral growing on the ledges
@@ -1328,7 +1333,7 @@ function drawTerrain(){
   else{ctx.strokeStyle=S.loc==='frozen'?'rgba(150,170,140,0.7)':'rgba(70,110,50,0.75)';for(let k=0;k<3;k++){ctx.lineWidth=(1.4+k*0.4)*s;const sw=Math.sin(T*0.9+c+k)*6*s;ctx.beginPath();ctx.moveTo(x+k*3*s,y);ctx.quadraticCurveTo(x+k*3*s+sw*0.4,y-sz*0.6,x+k*3*s+sw,y-sz*(0.8+0.15*k));ctx.stroke();}}}
 }
 // cloudy water makes things look hazier; it gets darker the deeper you look
-function drawVeil(){const wc=waterCols(),tb={pond:0.28,river:0.2,lake:0.16,frozen:0.14,amazon:0.34,reef:0.06,deep:0.12}[S.loc],y0=Math.max(Lay.waterY,CAM.y);if(y0>=CAM.y+H)return;ctx.fillStyle=rgbaC(wc[0],tb);ctx.fillRect(CAM.x,y0,W,CAM.y+H-y0);}
+function drawVeil(){const wc=waterCols(),tb={pond:0.28,river:0.2,lake:0.16,frozen:0.14,amazon:0.34,trinity:0.3,reef:0.06,deep:0.12}[S.loc],y0=Math.max(Lay.waterY,CAM.y);if(y0>=CAM.y+H)return;ctx.fillStyle=rgbaC(wc[0],tb);ctx.fillRect(CAM.x,y0,W,CAM.y+H-y0);}
 function drawSurfaceDecor(){
  const id=S.loc,s=Lay.s,T=G.time,wy=Lay.waterY,WW=Lay.WW;if(CAM.y>wy+40)return;
  if(id==='pond'){
@@ -1507,15 +1512,15 @@ function drawAtmos(wy){
 // depth gauge, line meter and the fish finder screen
 function drawDepthHUD(){
  const s=Lay.s,wy=Lay.waterY;ctx.textBaseline='middle';
- if(CAM.y+H>wy){const span=toM(H),step=span>200?50:span>80?20:span>30?10:5;ctx.font='500 '+Math.round(11*Math.max(s,0.9))+'px Barlow, sans-serif';ctx.textAlign='right';
-  for(let m=0;m<=curLoc().depth;m+=step){const y=wy+m*Lay.ppm-CAM.y;if(y<70||y>H-10)continue;ctx.fillStyle='rgba(255,255,255,0.35)';ctx.fillRect(W-14,y,8,1);ctx.fillText(m+' m',W-18,y);}}
+ if(CAM.y+H>wy){const span=toM(H)*3.28084,step=span>600?200:span>250?50:span>100?25:span>40?10:5;ctx.font='500 '+Math.round(11*Math.max(s,0.9))+'px Barlow, sans-serif';ctx.textAlign='right';
+  for(let ft=0;ft<=curLoc().depth*3.28084;ft+=step){const y=wy+ft/3.28084*Lay.ppm-CAM.y;if(y<70||y>H-10)continue;ctx.fillStyle='rgba(255,255,255,0.35)';ctx.fillRect(W-14,y,8,1);ctx.fillText(ft+' ft',W-18,y);}}
  const L=G.lure;
  if(L&&(G.state==='lure'||G.state==='reeling')){const used=toM(lineUsed()),max=rodStats(S.rod).line,x=12,y=58,w=Math.min(220,W*0.42);
   ctx.fillStyle='rgba(8,14,20,0.66)';rr(ctx,x,y,w,50,10);ctx.fill();
-  ctx.fillStyle='#e8eef1';ctx.textAlign='left';ctx.font='700 '+Math.round(20*Math.max(s,0.85))+'px Barlow Condensed, sans-serif';ctx.fillText('DEPTH '+Math.max(0,Math.round(toM(L.y-wy)))+' m',x+10,y+16);
-  ctx.font='600 11px Barlow, sans-serif';ctx.fillStyle='rgba(232,238,241,0.75)';ctx.textAlign='right';ctx.fillText('LINE '+Math.round(used)+' / '+max+' m',x+w-10,y+16);
+  ctx.fillStyle='#e8eef1';ctx.textAlign='left';ctx.font='700 '+Math.round(20*Math.max(s,0.85))+'px Barlow Condensed, sans-serif';ctx.fillText('DEPTH '+fmtM(Math.max(0,toM(L.y-wy))),x+10,y+16);
+  ctx.font='600 11px Barlow, sans-serif';ctx.fillStyle='rgba(232,238,241,0.75)';ctx.textAlign='right';ctx.fillText('LINE '+Math.round(used*3.28084).toLocaleString('en-US')+' / '+fmtM(max),x+w-10,y+16);
   const k=clamp(used/max,0,1);ctx.fillStyle='rgba(255,255,255,0.12)';rr(ctx,x+10,y+32,w-20,8,4);ctx.fill();ctx.fillStyle=k>0.92?'#ef6a5b':k>0.75?'#f2c14e':'#7fb7d6';rr(ctx,x+10,y+32,(w-20)*k,8,4);ctx.fill();}
- if(S.sonar>0&&TER.mini&&G.state!=='landing'){const mw=Math.min(150,W*0.28),mh=Math.min(H*0.42,mw*TER.rows/TER.cols),mx=W-mw-12,my=58;
+ if(S.sonar>0&&TER.mini&&G.state!=='landing'){const mw=Math.min(150,W*0.28)*(S.sonar>=4?1.35:1),mh=Math.min(H*0.42,mw*TER.rows/TER.cols),mx=W-mw-12,my=58;
   ctx.save();ctx.globalAlpha=0.9;ctx.fillStyle='rgba(4,10,14,0.8)';rr(ctx,mx-4,my-4,mw+8,mh+8,8);ctx.fill();ctx.imageSmoothingEnabled=false;ctx.drawImage(TER.mini,mx,my,mw,mh);ctx.imageSmoothingEnabled=true;
   const sx=mw/Lay.WW,sy=mh/Lay.depthPx;ctx.strokeStyle='rgba(255,255,255,0.35)';ctx.lineWidth=1;ctx.strokeRect(mx+CAM.x*sx,my+Math.max(0,CAM.y-wy)*sy,W*sx,Math.max(2,(Math.min(CAM.y+H,Lay.WH)-Math.max(CAM.y,wy))*sy));
   ctx.fillStyle='#fff';ctx.fillRect(mx+Lay.sternX*sx,my,Lay.boatL*sx,2);
@@ -1600,11 +1605,7 @@ const hintEl=$('hint'),actBtn=$('actionBtn');let lastHint='',lastBtn='';
 const touchish=('ontouchstart' in window)||navigator.maxTouchPoints>0;
 function setFlash(m){G.flashMsg=m;G.flash=2;}
 function nextGoal(){
- const c=[];if(S.rod<RODS.length-1)c.push(['a rod upgrade',RODS[S.rod+1].price]);
- if(S.bucket<BUCKETS.length-1)c.push(['a bigger cooler',BUCKETS[S.bucket+1].price]);
- if(S.lure<LURES.length-1)c.push(['a lure upgrade',LURES[S.lure+1].price]);
- if(S.line<LINES.length-1)c.push(['stronger line',LINES[S.line+1].price]);if(S.light<LIGHTS.length-1)c.push(['a lure light',LIGHTS[S.light+1].price]);if(S.sonar<SONARS.length-1)c.push(['a fish finder',SONARS[S.sonar+1].price]);
- LOCS.forEach(l=>{if(S.unlocked.indexOf(l.id)<0)c.push(['a trip to '+l.name,l.price]);});
+ const c=[],here=MAP_ORDER.indexOf(S.loc);for(const g of GEAR){const n=g[1][(S[g[0]]||0)+1];if(n&&n.map<=here)c.push([(g[2]==='Cooler'?'a bigger cooler':'a '+g[2].toLowerCase()+' upgrade'),n.price]);} LOCS.forEach(l=>{if(S.unlocked.indexOf(l.id)<0)c.push(['a trip to '+l.name,l.price]);});
  if(!c.length){const left=FISH.length-Object.keys(S.log).length;return left?'Goal: catch the last '+left+' species':'You have caught every species. Master Angler!';}
  c.sort((a,b)=>a[1]-b[1]);return 'Next goal: save '+fmt(c[0][1])+' for '+c[0][0];
 }
@@ -1719,18 +1720,30 @@ function renderMarket(){
   h+='<div class="row"><img alt="" src="'+icon(sp,!known)+'"><div class="info"><b>'+(known?esc(sp.name):'???')+'</b> <span class="rar" style="background:'+r.color+'">'+r.label+'</span><br><small>Swims at '+fmtM(sp.d[0]*dm)+'–'+fmtM(sp.d[1]*dm)+' · '+lock+'</small></div><div class="price">'+fmt(sp.price*0.7)+'–'+fmt(sp.price*1.3)+'</div></div>';});
  return h+'</div>';
 }
-function rodDesc(i){const b=rodStats(i);return 'Holds '+b.line+' m of line. '+(i?'Reels '+Math.round((b.reel-1)*100)+'% faster and softens the fish’s pull on the line by '+Math.round((1-b.strength)*100)+'%.':'Basic reel speed.');}
-function lureDesc(i){const ls=lureStats(i);return LURES[i].desc+(i?' Rare fish ×'+ls.rare.toFixed(1)+', legendary fish ×'+ls.leg.toFixed(2)+', and bigger fish on average.':'');}
-// one upgrade button per kind of gear; the next item stays a surprise until you buy it
-function gearRow(kind,label,arr,cur,desc){const max=cur>=arr.length-1,next=arr[cur+1];
- const lvl='<div class="lvl">'+arr.map((_,i)=>'<i class="'+(i<=cur?'on':'')+'"></i>').join('')+'</div>';
- const act=max?'<span class="max">Fully upgraded</span>':'<button class="btn" data-act="buy" data-kind="'+kind+'" '+(S.money<next.price?'disabled':'')+'>Upgrade · '+fmt(next.price)+'</button>'+(S.money<next.price?'<small>Need '+fmt(next.price-S.money)+' more</small>':'<small>Level '+(cur+2)+' of '+arr.length+'</small>');
- return '<div class="gearRow"><div><div class="k">'+label+'</div><div class="n">'+esc(arr[cur].name)+'</div>'+lvl+'</div><div class="act">'+act+'</div><div class="d">'+desc+'</div></div>';}
-function renderShop(){
- return '<h2>Tackle box</h2><p class="sub">You have '+fmt(S.money)+'. Each upgrade is a surprise until you buy it.</p><div class="gear">'+
-  gearRow('rod','Rod & reel',RODS,S.rod,rodDesc(S.rod))+gearRow('lure','Lure',LURES,S.lure,lureDesc(S.lure))+gearRow('line','Fishing line',LINES,S.line,!S.line?'Thin starter line. It snaps easily when a fish pulls hard.':'Takes '+Math.round((lineStats(S.line).snap-1)*100)+'% more strain before it snaps, and softens the fish’s pull by '+Math.round((1-lineStats(S.line).pull)*100)+'%.')+gearRow('light','Lure light',LIGHTS,S.light,S.light?'Lights up the dark water around your lure.':'Deep water is dark. A light helps you see.')+gearRow('sonar','Fish finder',SONARS,S.sonar,['No map of the water yet.','Shows a map of the caves and where your lure is.','Also shows every fish on the map.','Shows fish colored by rarity, so you can hunt rare and legendary fish.'][S.sonar])+gearRow('bucket','Cooler',BUCKETS,S.bucket,'Holds '+BUCKETS[S.bucket].cap+' fish.')+'</div>';
-}
-function renderTravel(){
+function gearDesc(key,i){switch(key){
+ case 'rod':{const b=rodStats(i);return 'Holds '+fmtM(b.line)+' of line. Soaks up '+Math.round((1-b.strength)*100)+'% of a fish’s pull.';}
+ case 'reel':{const b=reelStats(i);return i?'Reels in '+Math.round((b.speed-1)*100)+'% faster. Big fish pull '+Math.round((1-1/b.drag)*100)+'% less line off your reel.':'A basic reel. Big fish pull line off it easily.';}
+ case 'line':return i?'Takes '+Math.round((lineStats(i).snap-1)*100)+'% more strain before it snaps, and holds up better against boss charges.':'Thin starter line. It snaps easily.';
+ case 'hook':{const b=hookStats(i);return (i?'Strikes hit '+Math.round((b.dmg-1)*100)+'% harder. ':'A basic hook. ')+'A fish stays hooked for '+b.hold.toFixed(1)+' seconds if you stop reeling.'}
+ case 'lure':{const b=lureStats(i);if(!i)return 'A simple soft bait. Upgrade it to hurt tougher fish.';return 'Rare fish ×'+b.rare.toFixed(1)+', legendary fish ×'+b.leg.toFixed(1)+'. Stronger lures can hurt tougher fish.';}
+ case 'sinker':return i?'Your lure swims '+Math.round((sinkerStats(i).spd-1)*100)+'% faster.':'A tiny weight. Your lure swims at normal speed.';
+ case 'light':return i?'Lights up '+Math.round((lightStats(i).r/150-1)*100)+'% more dark water around your lure.':'Deep water is dark. A light helps you see.';
+ case 'sonar':return ['No map of the water yet.','Shows a map of the caves and your lure.','Also shows every fish on the map.','Shows fish colored by rarity.','A bigger live map with fish, rarity and boss lairs.'][i];
+ case 'gloves':{const b=gloveStats(i);return (i?'The grab ring is '+Math.round((b.ring-1)*100)+'% bigger. ':'')+'You get '+b.tries+' tries to lip a fish.';}
+ case 'scent':return i?'Pulls fish within '+Math.round(scentStats(i).r/10)+' m of your lure toward it, and more fish show up.':'No scent. Fish only notice your lure up close.';
+ case 'bucket':return 'Holds '+BUCKETS[i].cap+' fish.';}}
+// one upgrade button per kind of gear; the next item stays a surprise, and better gear is only sold at farther maps
+function gearRow(key,arr,label){const cur=S[key]||0,max=cur>=arr.length-1,next=arr[cur+1],here=MAP_ORDER.indexOf(S.loc);
+ const lvl='<div class="lvl">'+arr.map((_,i)=>'<i class="'+(i<=cur?'on':'')+'"></i>').join('')+'</div>';let act;
+ if(max)act='<span class="max">Fully upgraded</span>';
+ else if(next.map>here)act='<button class="btn" disabled>Upgrade · '+fmt(next.price)+'</button><small>Sold at '+esc(LMAP[MAP_ORDER[next.map]].name)+'</small>';
+ else act='<button class="btn" data-act="buy" data-kind="'+key+'" '+(S.money<next.price?'disabled':'')+'>Upgrade · '+fmt(next.price)+'</button>'+(S.money<next.price?'<small>Need '+fmt(next.price-S.money)+' more</small>':'<small>Level '+(cur+2)+' of '+arr.length+'</small>');
+ return '<div class="gearRow"><div><div class="k">'+label+'</div><div class="n">'+esc(arr[cur].name)+'</div>'+lvl+'</div><div class="act">'+act+'</div><div class="d">'+gearDesc(key,cur)+'</div></div>';}
+function newHere(){const here=MAP_ORDER.indexOf(S.loc);return GEAR.filter(g=>{const n=g[1][(S[g[0]]||0)+1];return n&&n.map===here;}).length;}
+function renderShop(){const fresh=newHere();
+ return '<h2>Tackle box</h2><p class="sub">You have '+fmt(S.money)+'. Each upgrade is a surprise until you buy it. Better gear is only sold at farther maps.'+(fresh?' <b style="color:var(--accent)">'+fresh+' upgrade'+(fresh>1?'s':'')+' sold here at '+esc(curLoc().name)+'.</b>':'')+'</p>'+
+  '<div class="gear">'+GEAR.map(g=>gearRow(g[0],g[1],g[2])).join('')+'</div>';
+}function renderTravel(){
  let h='<h2>⛵ Sail Away</h2><p class="sub">Buy a sea ticket once and your boat can sail there any time! You have '+fmt(S.money)+'</p><div class="locs">';
  LOCS.forEach(l=>{const th=l.theme,un=S.unlocked.indexOf(l.id)>=0,here=S.loc===l.id;const fl=FISH.filter(f=>f.loc===l.id);const got=fl.filter(f=>S.log[f.id]).length;
   let btn;if(here)btn='<button class="btn" disabled>📍 Your boat is here</button>';
@@ -1759,8 +1772,9 @@ function renderHelp(){
  '<li><b>Strike fish.</b> Ram a fish with your lure to weaken it. Faster hits do more damage, so click to <b>dash</b>. When its health bar is empty, it is hooked. Some fish are too strong for your lure until you upgrade it. The deeper you go, the bigger the fish.</li>'+
  '<li><b>Reel it in.</b> Hold to reel. If the LINE meter reaches red, let go or it snaps. When the fish runs one way, pull the rod the other way with the <b>← PULL →</b> buttons or the arrow keys.</li>'+
  '<li><b>Lip it.</b> At the boat, move your hand to the fish’s lower lip with the mouse and click to grab it. You get 3 tries.</li>'+
- '<li><b>Upgrade.</b> In the tackle box you can upgrade your rod, lure, fishing line, lure light (to see in the dark deep), fish finder (a sonar map that shows fish) and cooler. Each upgrade is a surprise.</li>'+
- '<li><b>Boss fights.</b> Giant fish guard big lair caves deep down: the Wels Catfish (Rushing River), the Alligator Gar (Mountain Lake), and the Redtail Catfish, Arapaima and Pira\u00edba (Amazon River). The fish finder marks their lairs with red circles. You need a very good rod and lure to hurt them. Bosses charge your lure, and every hit damages your line, so dodge, then strike while they recover. Beat one, reel it in and lip it to earn a trophy.</li>'+
+ '<li><b>Upgrade.</b> The tackle box has 11 kinds of gear: rod (how much line you have), reel (reel speed, and stops big fish pulling line off), fishing line, hook, lure, sinker (lure speed), lure light, fish finder, landing gloves, fish scent and cooler. Better gear is only sold at farther maps, so every new map brings new upgrades. Each one is a surprise until you buy it.</li>'+
+ '<li><b>Big fish pull line.</b> When a big fish runs, it pulls line off your reel. If it takes all of it, the line is gone. Pull against the run and wait for it to tire before reeling hard.</li>'+
+ '<li><b>Boss fights.</b> Giant fish guard big lair caves deep down: the Wels Catfish (Rushing River), the giant Alligator Gar (Trinity River), and the Redtail Catfish, Arapaima and Pira\u00edba (Amazon River). The fish finder marks their lairs with red circles. You need a very good rod and lure to hurt them. Bosses charge your lure, and every hit damages your line, so dodge, then strike while they recover. Beat one, reel it in and lip it to earn a trophy.</li>'+
  '<li><b>Weather and time.</b> Rain brings more fish out. Storms bring big fish that fight harder. Fog hides legendary fish.</li></ol>'+
  '<h3>Your stats</h3><p>Fish caught: <b>'+S.caught+'</b> · Got away: <b>'+S.escaped+'</b> · Customers fed: <b>'+S.served+'</b> · Money earned: <b>'+fmt(S.earned)+'</b></p>'+
  '<p class="sub" style="font-size:13px">'+(saveOK?'Your game saves automatically in this browser.':'This browser is not letting the game save.')+'</p>'+
@@ -1789,8 +1803,8 @@ function checkAdminCode(){const inp=$('admCode');if(!inp)return;
 function adminCmd(cmd){
  const top=a=>a.length-1;
  if(cmd==='m1k')S.money+=1000;else if(cmd==='m10k')S.money+=10000;else if(cmd==='m100k')S.money+=100000;else if(cmd==='m0')S.money=0;
- else if(cmd==='maxgear'){S.rod=top(RODS);S.lure=top(LURES);S.bucket=top(BUCKETS);S.line=top(LINES);S.light=top(LIGHTS);S.sonar=top(SONARS);}
- else if(cmd==='resetgear'){S.rod=S.lure=S.bucket=S.line=S.light=S.sonar=0;}
+ else if(cmd==='maxgear'){for(const g of GEAR)S[g[0]]=top(g[1]);}
+ else if(cmd==='resetgear'){for(const g of GEAR)S[g[0]]=0;}
  else if(cmd==='unlock')S.unlocked=LOCS.map(l=>l.id);
  else if(cmd==='reveal'){for(const sp of FISH)if(!S.log[sp.id])S.log[sp.id]={count:1,best:sp.minW};}
  else if(cmd==='bosses'){G.bossDone={};G.swim=G.swim.filter(f=>!f.boss||f.state==='hooked');spawnBosses();}
@@ -1805,13 +1819,12 @@ function adminCmd(cmd){
 function renderWin(){return '<h2 style="text-align:center;font-size:32px">🏆 MASTER ANGLER! 🏆</h2><p style="text-align:center;font-size:20px">WOW! You caught all '+FISH.length+' kinds of fish!<br>You are the best fisher in the whole world! 🎉</p><p style="text-align:center">Keep fishing to beat your size records and get rich!</p><button class="big gold" data-act="close">Hooray! 🎣</button>';}
 
 function buy(kind){
- const arr={rod:RODS,bucket:BUCKETS,lure:LURES,line:LINES,light:LIGHTS,sonar:SONARS}[kind];if(!arr)return;const i=S[kind]+1;
+ const g=GEAR.find(x=>x[0]===kind);if(!g)return;const arr=g[1],i=(S[kind]||0)+1;
  if(!arr[i])return;const p=arr[i].price;
+ if(arr[i].map>MAP_ORDER.indexOf(S.loc)){Snd.error();toast('That upgrade is only sold at '+LMAP[MAP_ORDER[arr[i].map]].name+'.','bad');return;}
  if(S.money<p){Snd.error();toast('Not enough money yet. You need '+fmt(p-S.money)+' more.','bad');return;}
  S.money-=p;S[kind]=i;save();Snd.buy();toast('Upgraded! You got the '+arr[i].name+'.','good',3200);updateHUD();renderPanel();
-}
-function travelTo(id){if(S.unlocked.indexOf(id)<0||id===S.loc)return;closePanel();startSail(id);}
-function buyTicket(id){const l=LMAP[id];if(!l||S.unlocked.indexOf(id)>=0)return;
+}function buyTicket(id){const l=LMAP[id];if(!l||S.unlocked.indexOf(id)>=0)return;
  if(S.money<l.price){Snd.error();toast('Not enough money! Need '+fmt(l.price-S.money)+' more.','bad');return;}
  S.money-=l.price;S.unlocked.push(id);save();updateHUD();toast('🎟️ Ticket bought! You can sail to '+l.name+' any time!','gold',3000);confetti(50);travelTo(id);}
 function sellIdx(i){const f=S.fish[i];if(!f)return;S.fish.splice(i,1);S.money+=f.v;S.earned+=f.v;save();Snd.coin();toast('+'+fmt(f.v)+' 💰','gold',1400);updateHUD();renderPanel();}
