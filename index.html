@@ -1875,7 +1875,7 @@ function renderAdmin(){
   '<h3>Fighting</h3><div class="admGrid">'+B('god',S.god?'God mode: turn OFF':'God mode: turn ON')+B('weak','Weaken all fish nearby')+'</div>'+
   '<h3>Weather</h3><div class="admGrid">'+Object.keys(WXT).map(k=>B('wx_'+k,WXT[k].e+' '+WXT[k].n)).join('')+'</div>'+
   '<h3>Time of day</h3><div class="admGrid">'+B('t_6','🌅 Sunrise')+B('t_12','☀️ Noon')+B('t_18','🌇 Sunset')+B('t_0','🌙 Midnight')+'</div>'+
-  '<h3>Undo</h3>'+(G.admAsk?'<p>'+(S.adminBackup?'This puts your money, gear, places, logbook and cooler back to how they were before you used any admin command, and turns off god mode, the weather and the time changes. <b>Anything you caught or bought since then is undone too.</b>':'This turns off god mode and puts the weather and time back to normal. Money, gear and places from commands used before this button existed cannot be undone.')+'</p>'+
+  '<h3>Undo</h3>'+(G.admAsk?'<p>'+(S.adminBackup?'This puts your money, gear, places, logbook and cooler back to how they were before you used any admin command, and turns off god mode, the weather and the time changes. <b>Anything you caught or bought since then is undone too.</b>':'This turns off god mode and puts the weather and time back to normal. Money, gear and places from commands used before this button existed cannot be undone.')+' It also resets the logbook: every species that was filled in by a command is removed, and fish you really caught stay.</p>'+
    '<div class="admGrid"><button class="btn" data-act="adm" data-cmd="resetall">Yes, reset all commands</button>'+B('resetno','No, keep them')+'</div>':
    '<button class="big gray" data-act="adm" data-cmd="resetask">Reset all commands</button>')+
   '<button class="big red" data-act="adm" data-cmd="lock" style="font-size:16px">Lock admin commands</button>';
@@ -1885,6 +1885,9 @@ function adminResetAll(){
  const muted=S.muted,loc=S.loc;
  if(S.adminBackup){try{localStorage.setItem(KEY,S.adminBackup);}catch(e){}S=load();S.admin=true;S.muted=muted;toast('All admin commands undone. Your game is back to how it was before.','good',3600);}
  else toast('God mode, weather and time are back to normal.','good',3200);
+ // take out every logbook entry that "Fill the logbook" wrote (it writes 1 catch at the smallest size); fish you really caught stay
+ let wiped=0;for(const sp of FISH){const e=S.log[sp.id];if(e&&e.count<=1&&e.best===sp.minW){delete S.log[sp.id];wiped++;}}
+ if(wiped){if(Object.keys(S.log).length<FISH.length)S.won=false;toast('Logbook reset: '+wiped+' filled-in species removed.','good',3600);}
  S.god=false;S.adminBackup='';_rfx=null;G.clock=8;G.lure=null;G.state='idle';
  if(S.loc!==loc){G.parts=[];sceneCache.key='';G.bossDone={};buildWorld();initAmbient();}
  rollWeather(false);if(!S.order)newOrder();
