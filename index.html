@@ -162,6 +162,32 @@ html,body{overscroll-behavior:none}
  .panel h2{font-size:24px}
  .gearRow{grid-template-columns:1fr}.gearRow .act{grid-row:auto;grid-column:1;align-items:stretch}
 }
+.bench{background:var(--panel2);border:1px solid var(--accent);border-radius:12px;padding:14px 16px;margin:12px 0}
+.bench .k{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.bench .n{font-family:var(--display);font-size:26px;font-weight:700;line-height:1.1}
+.bench .d{font-size:14px;color:var(--mute);margin:2px 0 10px}
+.rigline{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.rigline .end{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.slot{display:inline-flex;align-items:center;gap:6px;border:1px dashed #3a4851;border-radius:999px;padding:5px 12px;font-size:13px;color:var(--mute);background:transparent}
+button.slot.add{border-color:var(--accent);color:var(--accent);font-weight:600}
+.chip .dot{vertical-align:-1px}.chip:disabled{opacity:.45}
+button.slot.on{border-style:solid;border-color:var(--line);background:var(--panel);color:var(--ink);font-weight:600}
+.slot i,.dot{width:12px;height:12px;border-radius:50%;flex:none;display:inline-block}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:6px 10px;font-size:13px;font-weight:600}
+.chip small{color:var(--mute);font-weight:500}
+.chip.on{border-color:var(--accent);color:var(--accent)}
+.benchAct{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.warn,.max{font-family:var(--display);font-size:16px;letter-spacing:.1em;text-transform:uppercase}
+.warn{color:var(--warn)}.max{color:var(--good)}
+.row .btn{flex:none}
+.panel.knot{max-width:780px}
+#knotView .sub{min-height:2.7em}
+#knCanvas{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--line);touch-action:none;cursor:crosshair;margin-top:10px}
+#knBtns{display:flex;gap:10px;justify-content:flex-end;margin-top:12px;min-height:38px}
+#hint.mob{display:none}
+.btn.blue:disabled,.btn.purple:disabled{background:#2a353c;color:var(--mute)}
+@media (max-width:560px){.row{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -193,6 +219,7 @@ html,body{overscroll-behavior:none}
  </nav>
 </div>
 <div id="modal" class="overlay hidden"><div class="panel" id="panel"><button class="close" id="closeBtn" aria-label="Close">✕</button><div id="panelBody"></div></div></div>
+<div id="knotView" class="overlay hidden"><div class="panel knot"><button class="close" id="knClose" aria-label="Close">✕</button><h2 id="knTitle">Tie the knot</h2><p class="sub" id="knHint"></p><canvas id="knCanvas" width="720" height="420"></canvas><div id="knBtns"></div></div></div>
 <div id="catchCard" class="overlay hidden"><div class="panel">
  <div id="ccBanner">New species</div>
  <canvas id="ccCanvas" width="600" height="508"></canvas>
@@ -319,6 +346,39 @@ function sinkerStats(t){return {spd:1+t*0.09};}
 function lightStats(t){return {r:150+t*45,dim:1-t*0.07};}
 function gloveStats(t){return {ring:1+t*0.13,tries:3+Math.floor(t/2)};}
 function scentStats(t){return {r:t*70,spawn:t*2};}
+// ---------- rigs & knots ----------
+// Supplies come in packs. Parts you tie into a rig are used up if your line breaks.
+// fx: spd = lure speed, knot = knot strength, reel = reel speed, pull = softer fish pull, snap = line strain,
+//     dmg = strike damage, scent = how far fish notice the lure, hold = seconds a fish stays hooked
+const PARTS=[
+ {id:'shot',name:'Slip weight',pack:6,price:20,color:'#8d979d',fx:{spd:0.06},d:'Your lure swims 6% faster.'},
+ {id:'bead',name:'Glass bead',pack:6,price:30,color:'#e0883a',fx:{knot:0.06},d:'Cushions the knot: +6% knot strength.'},
+ {id:'swivel',name:'Barrel swivel',pack:5,price:60,color:'#c9a24a',fx:{reel:0.08},d:'Stops line twist: you reel 8% faster.'},
+ {id:'leader',name:'Fluorocarbon leader',pack:3,price:150,color:'#8fd0e0',fx:{pull:0.08,snap:0.12},d:'Stretchy and tough: fish pull 8% softer and the line takes 12% more strain.'},
+ {id:'blade',name:'Spinner blade',pack:3,price:240,color:'#d7dde0',fx:{dmg:0.12},d:'Flash and thump: strikes hit 12% harder.'},
+ {id:'rattle',name:'Rattle',pack:3,price:400,color:'#c65a4a',fx:{scent:90},d:'Fish hear it from 9 m away and swim over.'},
+ {id:'stinger',name:'Stinger hook',pack:3,price:650,color:'#b0b8bd',fx:{hold:1.5,dmg:0.06},d:'A second hook: fish stay on 1.5 s longer and strikes hit 6% harder.'},
+ {id:'wire',name:'Wire leader',pack:2,price:1200,color:'#59636a',fx:{snap:0.4},d:'Bite-proof: the line takes 40% more strain.'}
+];
+const PMAP={};PARTS.forEach(p=>PMAP[p.id]=p);
+const RIG_SLOTS=4;
+// real rigs: tie on these parts together to get an extra bonus (best match wins)
+const RIGS=[
+ {name:'Trophy rig',need:['wire','swivel','stinger','bead'],fx:{snap:0.3,hold:1,dmg:0.1},d:'+30% line strain, +10% strike, fish stay on 1 s longer'},
+ {name:'Carolina rig',need:['shot','bead','swivel','leader'],fx:{reel:0.12,snap:0.15},d:'+12% reel speed, +15% line strain'},
+ {name:'Spinner rig',need:['blade','bead','swivel'],fx:{dmg:0.15},d:'+15% strike damage'},
+ {name:'Steel leader rig',need:['wire','swivel'],fx:{snap:0.2},d:'+20% line strain'},
+ {name:'Rattle rig',need:['rattle','blade'],fx:{scent:80},d:'fish notice it from 8 m farther'},
+ {name:'Texas rig',need:['shot','bead'],fx:{spd:0.1},d:'+10% lure speed'}
+];
+// knots: max = the strength of a perfectly tied one; pts = the path your line end follows (on a 720 x 420 bench)
+const KNOTS=[
+ {id:'overhand',name:'Overhand knot',price:0,max:0.6,d:'Quick and easy, but it is the weakest knot.',pts:[[520,210],[588,150],[470,152],[468,262],[548,182]]},
+ {id:'clinch',name:'Improved clinch knot',price:150,max:0.85,d:'Five wraps and a tuck. A solid everyday knot.',pts:[[520,210],[455,170],[430,250],[405,170],[380,250],[355,170],[330,250],[495,240],[440,128]]},
+ {id:'uni',name:'Uni knot',price:900,max:0.93,d:'Wraps inside its own loop. Strong and reliable.',pts:[[520,210],[300,172],[452,276],[420,180],[400,246],[380,180],[360,246],[340,180],[320,246],[250,150]]},
+ {id:'palomar',name:'Palomar knot',price:4000,max:1,d:'The strongest knot there is, if you tie it cleanly.',pts:[[520,210],[602,140],[440,150],[400,256],[470,246],[602,292],[662,210],[560,118]]}
+];
+const KMAP={};KNOTS.forEach(k=>KMAP[k.id]=k);
 /*DATA_END*/
 // Hungry customers who visit the Market and pay DOUBLE for the fish they want
 const CUSTOMERS=[
@@ -345,7 +405,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 
 // ---------- save / load ----------
 const KEY='kidFishingAdventure_v1';
-function defaults(){return {money:0,rod:0,bucket:0,lure:0,line:0,light:0,sonar:0,unlocked:['pond'],loc:'pond',fish:[],log:{},muted:false,earned:0,caught:0,escaped:0,seenHelp:false,won:false,order:null,served:0,trophies:{},admin:false,god:false,reel:0,hook:0,sinker:0,gloves:0,scent:0,repel:0,repelOn:true};}
+function defaults(){return {money:0,rod:0,bucket:0,lure:0,line:0,light:0,sonar:0,unlocked:['pond'],loc:'pond',fish:[],log:{},muted:false,earned:0,caught:0,escaped:0,seenHelp:false,won:false,order:null,served:0,trophies:{},admin:false,god:false,reel:0,hook:0,sinker:0,gloves:0,scent:0,repel:0,repelOn:true,sup:{},knots:['overhand'],rig:{parts:[],knot:'overhand',k:0.6,tied:true},adminBackup:''};}
 function load(){
  const d=defaults();
  try{
@@ -361,6 +421,8 @@ function load(){
  d.fish=d.fish.filter(f=>f&&FMAP[f.id]&&typeof f.v==='number');
  const lg={};for(const k in d.log){if(FMAP[k]&&d.log[k])lg[k]={count:d.log[k].count|0,best:+d.log[k].best||0};}d.log=lg;
  if(d.order&&(!FMAP[d.order.id]||!CUSTOMERS[d.order.c]))d.order=null;
+ {const sp={};for(const p of PARTS)sp[p.id]=Math.max(0,(d.sup&&d.sup[p.id])|0);d.sup=sp;d.knots=(Array.isArray(d.knots)?d.knots:[]).filter(k=>KMAP[k]);if(d.knots.indexOf('overhand')<0)d.knots.unshift('overhand');
+  const r=d.rig&&typeof d.rig==='object'?d.rig:{};d.rig={parts:(Array.isArray(r.parts)?r.parts:[]).filter((p,i,a)=>PMAP[p]&&a.indexOf(p)===i).slice(0,RIG_SLOTS),knot:KMAP[r.knot]&&d.knots.indexOf(r.knot)>=0?r.knot:'overhand',k:clamp(+r.k||0.6,0.2,1),tied:r.tied!==false};}
  return d;
 }
 let S=load();
@@ -773,7 +835,7 @@ function updateSwimmers(dt){
   f.hitT=Math.max(0,f.hitT-dt);f.fleeT=Math.max(0,f.fleeT-dt);
   if(f.state==='hooked'||f.state==='boss')continue;
   // fish scent pulls nearby fish toward your lure
-  if(S.scent&&G.lure&&G.state==='lure'&&f.fleeT<=0){const dx=G.lure.x-f.x,dy=G.lure.y-f.y,R=scentStats(S.scent).r*s;if(dx*dx+dy*dy<R*R){f.dir=dx<0?-1:1;f.ty=G.lure.y;}}
+  if((S.scent||rigFx().scent)&&G.lure&&G.state==='lure'&&f.fleeT<=0){const dx=G.lure.x-f.x,dy=G.lure.y-f.y,R=(scentStats(S.scent).r+rigFx().scent)*s;if(dx*dx+dy*dy<R*R){f.dir=dx<0?-1:1;f.ty=G.lure.y;}}
   f.turnT-=dt;if(f.turnT<=0){f.turnT=rand(3,8);if(Math.random()<0.4)f.dir*=-1;f.ty=f.y+rand(-2,2)*Lay.C;}
   const sp=f.fleeT>0?f.spd*4:f.spd;f.vx+=(f.dir*sp-f.vx)*Math.min(1,dt*(f.fleeT>0?6:2));
   const y0=Lay.waterY+Math.max(0.02,f.sp.d[0]-0.05)*Lay.depthPx,y1=Lay.waterY+Math.min(1,f.sp.d[1]+0.05)*Lay.depthPx;f.ty=clamp(f.ty,y0,y1);
@@ -796,6 +858,7 @@ function lureLineMax(){return rodStats(S.rod).line*Lay.ppm;}
 function lineUsed(){const L=G.lure,l=L.path[L.path.length-1];return L.base+Math.hypot(L.x-l.x,L.y-l.y);}
 function castAt(x){
  if(isFull()){toast('Your cooler is full. Walk to the cooler at the stern to sell your catch.','bad');Snd.error();flashBucket();return;}
+ if(!S.rig.tied){openKnot();return;}
  const s=Lay.s;x=clamp(x,Lay.minX+20,Lay.maxX-20);
  if(x>Lay.sternX-30*s&&x<Lay.bowX+30*s)x=G.fishDir>0?Lay.bowX+50*s:Lay.sternX-50*s;
  if(blocked(x,Lay.waterY+8*s))x=G.fishDir>0?Lay.bowX+50*s:Lay.sternX-50*s;
@@ -814,7 +877,7 @@ function actionPress(x,y){
   case 'caught':if(performance.now()-G.cardT>450)closeCatchCard();break;
  }
 }function enterWater(){const s=Lay.s,c=G.castTo;
- G.lure={x:c.x,y:Lay.waterY+8*s,path:[{x:c.x,y:Lay.waterY+2}],base:0,vx:0,vy:0,dashT:0,dashCd:0,atMax:false,done:false,lineHp:100*lineStats(S.line).snap,lineMax:100*lineStats(S.line).snap};
+ G.lure={x:c.x,y:Lay.waterY+8*s,path:[{x:c.x,y:Lay.waterY+2}],base:0,vx:0,vy:0,dashT:0,dashCd:0,atMax:false,done:false,lineHp:100*lineStats(S.line).snap*snapK(),lineMax:100*lineStats(S.line).snap*snapK()};
  G.state='lure';splash(c.x,Lay.waterY,10,0.7);Snd.splash();}
 function clearSeg(a,b){const n=Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/(Lay.C*0.5));for(let i=1;i<n;i++){const t=i/n;if(solidAt(lerp(a.x,b.x,t),lerp(a.y,b.y,t)))return false;}return true;}
 // the line trails along the exact path the lure takes: going back along it takes line in, going somewhere new lets line out
@@ -842,7 +905,7 @@ function updateLure(dt){
   if(k.left||k.right||k.up||k.down){ax=L.x+((k.right?1:0)-(k.left?1:0))*300;ay=L.y+((k.down?1:0)-(k.up?1:0))*300;}
   else if(G.aimW){ax=G.aimW.x;ay=G.aimW.y;}
   const st=G.stick,sm=st?Math.hypot(st.x,st.y):0;let spK=1;if(sm>0.12){ax=L.x+st.x/sm*300;ay=L.y+st.y/sm*300;spK=Math.min(1,sm);}
-  const dx=ax-L.x,dy=ay-L.y,d=Math.hypot(dx,dy),vmax=(190+12*S.lure)*sinkerStats(S.sinker).spd*s*spK*(L.dashT>0?2.4:1);
+  const dx=ax-L.x,dy=ay-L.y,d=Math.hypot(dx,dy),vmax=(190+12*S.lure)*sinkerStats(S.sinker).spd*(1+rigFx().spd)*s*spK*(L.dashT>0?2.4:1);
   if(d>1){const step=Math.min(d,Math.min(vmax,d*7)*dt);moveLure(L.x+dx/d*step,L.y+dy/d*step);}
   else moveLure(L.x,L.y+6*s*dt);
  }
@@ -860,7 +923,7 @@ function checkStrikes(){const L=G.lure,s=Lay.s;
   if(S.repel&&S.repelOn!==false&&(f.sp.minW+f.t*(f.sp.maxW-f.sp.minW))*2.20462<REPEL_LB[S.repel]){f.hitT=1.2;floatText(f.x,f.y-f.bh,'Too small (repellent on)','#cfd8dc');continue;}
   f.hitT=0.45;f.dir=L.x<f.x?1:-1;f.fleeT=1;f.vx=f.dir*f.spd*5;
   if(f.sp.lure>S.lure){floatText(f.x,f.y-f.bh,'Too strong for your lure','#ffb08a');Snd.error();continue;}
-  const dmg=Math.max(1,Math.round((7+S.lure*4)*hookStats(S.hook).dmg*clamp(rel/(200*s),0.5,2.2)*(L.dashT>0?1.25:1)));f.hp-=dmg;
+  const dmg=Math.max(1,Math.round((7+S.lure*4)*hookStats(S.hook).dmg*(1+rigFx().dmg)*clamp(rel/(200*s),0.5,2.2)*(L.dashT>0?1.25:1)));f.hp-=dmg;
   floatText(f.x,f.y-f.bh*0.8,'-'+dmg,'#ffffff');Snd.hit();
   for(let i=0;i<6;i++)G.parts.push({t:'bub',x:L.x,y:L.y,vy:rand(20,70),r:rand(1,3)*s,life:1.2,max:1.2});
   if(f.hp<=0){f.hp=0;hookFish(f);return;}}
@@ -939,7 +1002,7 @@ function releaseFish(){if(G.state!=='reeling'||!G.hookedFish)return;const f=G.ho
 function lineBroken(f){
  const L=G.lure;Snd.snap();if(L)for(let i=0;i<8;i++)G.parts.push({t:'bub',x:L.x,y:L.y,vy:rand(30,90),r:rand(2,4)*Lay.s,life:1.5,max:1.5});
  G.lure=null;G.state='escaped';G.escT=3.2;G.holding=false;
- G.escMsg='The '+f.sp.name+' broke your line! Stronger fishing line and dodging its charges will help.';
+ G.escMsg='The '+f.sp.name+' broke your line! Stronger fishing line and dodging its charges will help.';rigLost();if(!S.rig.tied)G.escMsg+=' Your rig went with it, so tie on a new one.';
 }
 // your lure hitting a boss
 function bossStrikes(){
@@ -953,7 +1016,7 @@ function bossStrikes(){
   if(B.move==='armor'&&dx>0){k=0.25;floatText(f.x,f.y-f.bh*1.2,'Armored head! Hit it from behind','#cfd8dc');}
   if(B.move==='breathe')k=b.dazed>0?2:0.45;
   if(b.mode==='recover')k*=1.5;if(b.dazed>0&&B.move!=='breathe')k*=1.5;
-  const dmg=Math.max(1,Math.round((7+S.lure*4)*hookStats(S.hook).dmg*clamp(rel/(200*s),0.5,1.6)*(L.dashT>0?1.25:1)*k*0.65));f.hp-=dmg;
+  const dmg=Math.max(1,Math.round((7+S.lure*4)*hookStats(S.hook).dmg*(1+rigFx().dmg)*clamp(rel/(200*s),0.5,1.6)*(L.dashT>0?1.25:1)*k*0.65));f.hp-=dmg;
   floatText(f.x,f.y-f.bh*0.8,'-'+dmg,k>1?'#ffe08a':'#ffffff');Snd.hit();
   for(let i=0;i<8;i++)G.parts.push({t:'bub',x:L.x,y:L.y,vy:rand(20,70),r:rand(1,3)*s,life:1.2,max:1.2});
   if(f.hp<=0){f.hp=0;b.active=false;G.bossBanner=null;hookFish(f);return;}}
@@ -983,7 +1046,7 @@ function bossTrophies(){let h='<h3>Boss trophies</h3><div class="grid">';for(con
 function pullInput(){return G.btnPull||G.dragPull||((G.keys.right?1:0)-(G.keys.left?1:0));}
 function hookFish(f){G.hookedFish=f;f.state='hooked';G.hooked=rollCatch(f.sp,f.t);G.hooked.boss=!!f.boss;G.hooked.bossId=f.id;if(f.boss)G.hooked.value*=3;G.holding=false;Snd.bite();
  const rs=rodStats(S.rod),d=f.sp.diff+f.t*1.2+wxMods().diff+(f.boss?4:0),lb=G.hooked.w*2.20462;G.state='reeling';
- G.fight={d,ten:0.3,stam:f.boss?1:0.55,strain:0,idle:0,phase:'rest',pt:rand(0.6,1.2),dir:1,dv:0,str:1,counter:0,pull:0.22+d*0.065,abs:rs.strength*lineStats(S.line).pull,reel:reelStats(S.reel).speed,
+ G.fight={d,ten:0.3,stam:f.boss?1:0.55,strain:0,idle:0,phase:'rest',pt:rand(0.6,1.2),dir:1,dv:0,str:1,counter:0,pull:0.22+d*0.065,abs:rs.strength*lineStats(S.line).pull*(1-rigFx().pull),reel:reelStats(S.reel).speed*(1+rigFx().reel),
   big:clamp(Math.log10(lb+1)/2.6,0,1)*(f.boss?1.25:1),startLen:Math.max(1,lineUsed()),dist:1,clickT:0,dragT:0,eff:0,jumpT:-1,out:0};
  if(G.fight.big>0.45){G.fight.phase='rest';G.fight.pt=0.15;}
  toast(f.boss?'The boss is hooked! Hold on tight.':'Fish on! Reel it in.','gold',1800);}
@@ -1002,12 +1065,12 @@ function updateFight(dt){
   F.out+=Math.max(0,lineUsed()-before);F.dragT-=dt;if(F.dragT<=0){F.dragT=0.05;Snd.drag();}}
  let tT=reel?0.3+eff+(run?0.5*F.big:0):0.12+eff*0.5;if(L.atMax&&run)tT+=0.45;
  F.ten+=(tT-F.ten)*Math.min(1,dt*(tT>F.ten?6:4));
- if(F.ten>0.9)F.strain+=dt*(1+(F.ten-0.9)*8)/ls.snap;else F.strain=Math.max(0,F.strain-dt*0.8);
+ if(F.ten>0.9)F.strain+=dt*(1+(F.ten-0.9)*8)/(ls.snap*snapK());else F.strain=Math.max(0,F.strain-dt*0.8);
  if(F.strain>=1&&!S.god){escapeFish(L.atMax?'spool':'snap');return;}
  const effN=clamp(eff,0,1.1);
  if(reel){retract(dt*125*s*F.reel*Math.max(0.05,1.1-0.85*effN)*(1+0.6*(1-F.stam))/(1+F.d*0.12)/(1+F.big*1.8)*(run?0.2:1));F.idle=0;F.clickT-=dt;if(F.clickT<=0){F.clickT=0.08;Snd.tick();}}
  else F.idle=run?Math.max(0,F.idle-dt):F.idle+dt;
- if(F.idle>hookStats(S.hook).hold&&!S.god){escapeFish('shake');return;}
+ if(F.idle>hookStats(S.hook).hold+rigFx().hold&&!S.god){escapeFish('shake');return;}
  const drain=run?0.14*(0.5+0.5*Math.max(0,F.counter)+(reel?0.3:0)):(reel?0.03:-0.015);
  F.stam=clamp(F.stam-drain*dt/(1+F.d*0.075),0,1);
  if(!L.done)straighten();
@@ -1068,7 +1131,7 @@ function escapeFish(reason){
   reason==='spool'?'The '+n+' pulled all the line off your reel! A better reel and a longer-line rod help with big fish.':
   reason==='shake'?'The '+n+' threw the hook. Keep reeling when it rests.':
   reason==='boat'?'The '+n+' wiggled out of your hand at the boat. So close!':'The '+n+' got away.';
- if(reason==='snap')Snd.snap();else Snd.escape();
+ if(reason==='snap'){Snd.snap();rigLost();if(!S.rig.tied)G.escMsg+=' Your rig went with it, so tie on a new one.';}else Snd.escape();
  if(L&&reason!=='boat')G.parts.push({t:'bub',x:L.x,y:L.y,vy:60,r:4,life:1.5,max:1.5});
  G.lure=null;
 }
@@ -1625,7 +1688,7 @@ function updateUI(){
  let h,cls='',b,bc='';
  const walkKeys=touchish?'Tap the deck to walk':'A/D or ←/→ to walk the deck',near=nearStation();
  switch(G.state){
-  case 'idle':h=isFull()?'Your cooler is full. Walk to the cooler at the stern to sell your catch.':near?(touchish?'Tap':'Press E')+' to use the '+near.label.toLowerCase()+', or '+(touchish?'tap':'click')+' the water to cast':(touchish?'Tap':'Click')+' the water in front of or behind the boat to cast · '+walkKeys;b='CAST';break;
+  case 'idle':h=!S.rig.tied?'Your rig is not tied on. '+(touchish?'Tap':'Click')+' the water to tie a knot, or build a rig at the tackle box.':isFull()?'Your cooler is full. Walk to the cooler at the stern to sell your catch.':near?(touchish?'Tap':'Press E')+' to use the '+near.label.toLowerCase()+', or '+(touchish?'tap':'click')+' the water to cast':(touchish?'Tap':'Click')+' the water in front of or behind the boat to cast · '+walkKeys;b='CAST';break;
   case 'casting':h='Casting…';b='…';bc='wait';break;
   case 'lure':{const L=G.lure,ab=activeBoss();h=ab?(bossReady(ab.B)?'Boss fight! '+ab.B.tip:'This boss is too strong for your gear. You need a '+bossNeeds(ab.B)+'.'):L&&L.atMax?'Out of line! Steer back along your line or reel in. A better rod holds more line.':touchish?'Steer with the joystick. Tap DASH to ram fish and weaken them. Hold REEL IN to bring the lure back.':'Steer the lure with your mouse. Click to dash. Ram fish to weaken them. Hold Space to reel in.';b='REEL IN';bc='reel';break;}
   case 'reeling':{const F=G.fight,lk=touchish?'':' (←/→)';
@@ -1643,6 +1706,8 @@ function updateUI(){
  if(G.flash>0&&(G.state==='waiting'||G.state==='idle'))h=G.flashMsg;
  let html=esc(h);if(G.state==='idle')html+='<small>'+esc(nextGoal())+'</small>';
  const key=html+cls;if(key!==lastHint){hintEl.innerHTML=html;hintEl.className=cls;lastHint=key;}
+ // on phones and tablets the how-to text at the top stays hidden; only warnings and what-just-happened messages show
+ hintEl.classList.toggle('mob',touchish&&!cls&&G.state!=='escaped'&&!(G.flash>0));
  const bkey=b+bc;if(bkey!==lastBtn){actBtn.innerHTML=b+(touchish||b.length<3?'':'<small>(Space)</small>');actBtn.className=bc;lastBtn=bkey;}
  actBtn.classList.toggle('held',G.holding&&G.state==='reeling');
  actBtn.classList.toggle('hidden',G.state==='landing');
@@ -1756,7 +1821,7 @@ function gearRow(key,arr,label){const cur=S[key]||0,max=cur>=arr.length-1,next=a
 function newHere(){const here=MAP_ORDER.indexOf(S.loc);return GEAR.filter(g=>{const n=g[1][(S[g[0]]||0)+1];return n&&n.map===here;}).length;}
 function renderShop(){const fresh=newHere();
  return '<h2>Tackle box</h2><p class="sub">You have '+fmt(S.money)+'. Each upgrade is a surprise until you buy it. Better gear is only sold at farther maps.'+(fresh?' <b style="color:var(--accent)">'+fresh+' upgrade'+(fresh>1?'s':'')+' sold here at '+esc(curLoc().name)+'.</b>':'')+'</p>'+
-  '<div class="gear">'+GEAR.map(g=>gearRow(g[0],g[1],g[2])).join('')+'</div>';
+  rigBenchHTML()+suppliesHTML()+'<h3>Gear upgrades</h3><div class="gear">'+GEAR.map(g=>gearRow(g[0],g[1],g[2])).join('')+'</div>';
 }function renderTravel(){
  let h='<h2>⛵ Sail Away</h2><p class="sub">Buy a sea ticket once and your boat can sail there any time! You have '+fmt(S.money)+'</p><div class="locs">';
  LOCS.forEach(l=>{const th=l.theme,un=S.unlocked.indexOf(l.id)>=0,here=S.loc===l.id;const fl=FISH.filter(f=>f.loc===l.id);const got=fl.filter(f=>S.log[f.id]).length;
@@ -1789,7 +1854,8 @@ function renderHelp(){
  '<li><b>Upgrade.</b> The tackle box has 12 kinds of gear: rod (how much line you have), reel (reel speed, and stops big fish pulling line off), fishing line, hook, lure, sinker (lure speed), lure light, fish finder, landing gloves, fish scent, fish repellent (fish under its weight limit can’t be caught, with an on/off switch) and cooler. Better gear is only sold at farther maps, so every new map brings new upgrades. Each one is a surprise until you buy it.</li>'+
  '<li><b>Big fish pull line.</b> When a big fish runs, it pulls line off your reel. If it takes all of it, the line is gone. Pull against the run and wait for it to tire before reeling hard.</li>'+
  '<li><b>Boss fights.</b> Giant fish guard big lair caves deep down: the Wels Catfish (Rushing River), the giant Alligator Gar (Trinity River), and the Redtail Catfish, Arapaima and Pira\u00edba (Amazon River). The fish finder marks their lairs with red circles. You need a very good rod and lure to hurt them. Bosses charge your lure, and every hit damages your line, so dodge, then strike while they recover. Beat one, reel it in and lip it to earn a trophy.</li>'+
- '<li><b>Weather and time.</b> Rain brings more fish out. Storms bring big fish that fight harder. Fog hides legendary fish.</li></ol>'+
+ '<li><b>Weather and time.</b> Rain brings more fish out. Storms bring big fish that fight harder. Fog hides legendary fish.</li>'+
+ '<li><b>Rigs and knots.</b> The tackle box sells rig supplies: beads, swivels, leaders, blades and more. Add up to '+RIG_SLOTS+' parts at the rig bench to build your own rig. Some mixes are real rigs with a bonus. Then tie it on: lead the end of the line through each numbered point with your mouse and pull it tight in the green. A neat knot is a strong knot. If your line snaps you lose the rig and tie a new one.</li></ol>'+
  '<h3>Your stats</h3><p>Fish caught: <b>'+S.caught+'</b> · Got away: <b>'+S.escaped+'</b> · Customers fed: <b>'+S.served+'</b> · Money earned: <b>'+fmt(S.earned)+'</b></p>'+
  '<p class="sub" style="font-size:13px">'+(saveOK?'Your game saves automatically in this browser.':'This browser is not letting the game save.')+'</p>'+
  '<button class="big gray" data-act="mute">'+(S.muted?'Sound is off. Turn it on':'Sound is on. Turn it off')+'</button>'+
@@ -1809,13 +1875,31 @@ function renderAdmin(){
   '<h3>Fighting</h3><div class="admGrid">'+B('god',S.god?'God mode: turn OFF':'God mode: turn ON')+B('weak','Weaken all fish nearby')+'</div>'+
   '<h3>Weather</h3><div class="admGrid">'+Object.keys(WXT).map(k=>B('wx_'+k,WXT[k].e+' '+WXT[k].n)).join('')+'</div>'+
   '<h3>Time of day</h3><div class="admGrid">'+B('t_6','🌅 Sunrise')+B('t_12','☀️ Noon')+B('t_18','🌇 Sunset')+B('t_0','🌙 Midnight')+'</div>'+
+  '<h3>Undo</h3>'+(G.admAsk?'<p>'+(S.adminBackup?'This puts your money, gear, places, logbook and cooler back to how they were before you used any admin command, and turns off god mode, the weather and the time changes. <b>Anything you caught or bought since then is undone too.</b>':'This turns off god mode and puts the weather and time back to normal. Money, gear and places from commands used before this button existed cannot be undone.')+'</p>'+
+   '<div class="admGrid"><button class="btn" data-act="adm" data-cmd="resetall">Yes, reset all commands</button>'+B('resetno','No, keep them')+'</div>':
+   '<button class="big gray" data-act="adm" data-cmd="resetask">Reset all commands</button>')+
   '<button class="big red" data-act="adm" data-cmd="lock" style="font-size:16px">Lock admin commands</button>';
+}
+// undo everything the admin commands did: go back to the save from just before the first command
+function adminResetAll(){
+ const muted=S.muted,loc=S.loc;
+ if(S.adminBackup){try{localStorage.setItem(KEY,S.adminBackup);}catch(e){}S=load();S.admin=true;S.muted=muted;toast('All admin commands undone. Your game is back to how it was before.','good',3600);}
+ else toast('God mode, weather and time are back to normal.','good',3200);
+ S.god=false;S.adminBackup='';_rfx=null;G.clock=8;G.lure=null;G.state='idle';
+ if(S.loc!==loc){G.parts=[];sceneCache.key='';G.bossDone={};buildWorld();initAmbient();}
+ rollWeather(false);if(!S.order)newOrder();
 }
 function checkAdminCode(){const inp=$('admCode');if(!inp)return;
  if(hashStr(inp.value.trim())===ADMIN_HASH){S.admin=true;save();Snd.buy();toast('Admin commands unlocked.','good');renderPanel();}
  else{Snd.error();$('admMsg').textContent='That code is not right. Try again.';inp.value='';inp.focus();}}
 function adminCmd(cmd){
  const top=a=>a.length-1;
+ if(cmd==='resetask'){G.admAsk=true;Snd.click();renderPanel();return;}
+ if(cmd==='resetno'){G.admAsk=false;Snd.click();renderPanel();return;}
+ G.admAsk=false;
+ if(cmd==='resetall'){adminResetAll();save();updateHUD();Snd.buy();renderPanel();return;}
+ // remember the game as it was before the first command, so "Reset all commands" can put it back
+ if(cmd!=='lock'&&!S.adminBackup){const c=Object.assign({},S,{adminBackup:''});S.adminBackup=JSON.stringify(c);}
  if(cmd==='m1k')S.money+=1000;else if(cmd==='m10k')S.money+=10000;else if(cmd==='m100k')S.money+=100000;else if(cmd==='m0')S.money=0;
  else if(cmd==='maxgear'){for(const g of GEAR)S[g[0]]=top(g[1]);}
  else if(cmd==='resetgear'){for(const g of GEAR)S[g[0]]=0;}
@@ -1848,7 +1932,7 @@ function sellAll(){if(!S.fish.length)return;const t=S.fish.reduce((a,f)=>a+f.v,0
 function feedCustomer(){const o=S.order;if(!o)return;let bi=-1;S.fish.forEach((f,i)=>{if(f.id===o.id&&(bi<0||f.v>S.fish[bi].v))bi=i;});if(bi<0)return;
  const f=S.fish.splice(bi,1)[0],pay=f.v*ORDER_BONUS,c=CUSTOMERS[o.c];S.money+=pay;S.earned+=pay;S.served++;newOrder();save();
  Snd.coin();setTimeout(()=>Snd.buy(),150);confetti(25);toast(c.e+' '+c.name.split(' ')[0]+' says THANK YOU! +'+fmt(pay),'gold',3000);updateHUD();renderPanel();}
-function doReset(){try{localStorage.removeItem(KEY);}catch(e){}S=defaults();S.seenHelp=true;newOrder();save();G.state='idle';G.sail=null;G.parts=[];G.hooked=null;moneyShown=-1;initAmbient();updateHUD();closePanel();toast('New game started! Good luck! 🎣','good');}
+function doReset(){try{localStorage.removeItem(KEY);}catch(e){}S=defaults();_rfx=null;S.seenHelp=true;newOrder();save();G.state='idle';G.sail=null;G.parts=[];G.hooked=null;moneyShown=-1;initAmbient();updateHUD();closePanel();toast('New game started! Good luck! 🎣','good');}
 
 body.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const a=b.dataset.act;
  if(a==='sell')sellIdx(+b.dataset.i);else if(a==='sellall')sellAll();else if(a==='feed')feedCustomer();else if(a==='buy')buy(b.dataset.kind);
@@ -1856,6 +1940,8 @@ body.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retur
  else if(a==='askreset'){curPanel='reset';renderPanel();}else if(a==='doreset')doReset();else if(a==='help'){curPanel='help';renderPanel();}
  else if(a==='mute'){toggleMute();renderPanel();}
  else if(a==='adm')adminCmd(b.dataset.cmd);
+ else if(a==='rigadd')rigAdd(b.dataset.id);else if(a==='rigrm')rigRemove(b.dataset.id);else if(a==='buypack')buyPack(b.dataset.id);
+ else if(a==='buyknot')buyKnot(b.dataset.id);else if(a==='knotpick')pickKnot(b.dataset.id);else if(a==='tie')openKnot();else if(a==='rigjump'){const el=$('supList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
  else if(a==='repeltoggle'){S.repelOn=S.repelOn===false;save();Snd.click();renderPanel();}});
 body.addEventListener('submit',e=>{e.preventDefault();if(e.target.id==='admForm')checkAdminCode();});
 $('adminBtn').addEventListener('click',e=>{e.currentTarget.blur();openPanel('admin');setTimeout(()=>{const i=$('admCode');if(i)i.focus();},60);});
@@ -1867,6 +1953,126 @@ document.querySelectorAll('#toolbar button').forEach(b=>b.addEventListener('clic
 function toggleMute(){S.muted=!S.muted;save();updateHUD();if(!S.muted)Snd.click();}
 $('muteBtn').addEventListener('click',e=>{e.currentTarget.blur();toggleMute();});
 
+// ---------- rig bench: build your own rig from supplies, then tie it on with a knot ----------
+let _rfx=null;
+function rigMatch(parts){for(const r of RIGS)if(r.need.every(n=>parts.indexOf(n)>=0))return r;return null;}
+// everything your tied-on rig adds, summed up
+function rigFx(){if(_rfx)return _rfx;const f={spd:0,knot:0,reel:0,pull:0,snap:0,dmg:0,scent:0,hold:0,name:'Bare hook'};
+ if(S.rig.tied){const add=x=>{for(const k in x)f[k]+=x[k];};for(const id of S.rig.parts)add(PMAP[id].fx);const m=rigMatch(S.rig.parts);if(m){add(m.fx);f.name=m.name;}else if(S.rig.parts.length)f.name='Custom rig';}
+ return _rfx=f;}
+function rigChanged(){_rfx=null;save();}
+function knotStrength(){return clamp(S.rig.k+rigFx().knot,0.2,1.1);}
+// how much strain the knot and rig let your line take (1 = a well-tied overhand knot on a bare hook)
+function snapK(){return (1+(knotStrength()-0.6)*1.25)*(1+rigFx().snap);}
+// the line broke: the rig on the end of it is gone
+function rigLost(){if(S.god)return;S.rig.parts=[];S.rig.tied=false;rigChanged();}
+function rigAdd(id){const r=S.rig;if(!PMAP[id]||r.parts.indexOf(id)>=0)return;
+ if(r.parts.length>=RIG_SLOTS){Snd.error();toast('Your rig is full. Take a part off first.','bad');return;}
+ if(!(S.sup[id]>0)){Snd.error();toast('You have none left. Buy a pack first.','bad');return;}
+ S.sup[id]--;r.parts.push(id);r.tied=false;rigChanged();Snd.click();renderPanel();}
+function rigRemove(id){const r=S.rig,i=r.parts.indexOf(id);if(i<0)return;r.parts.splice(i,1);S.sup[id]=(S.sup[id]||0)+1;r.tied=false;rigChanged();Snd.click();renderPanel();}
+function buyPack(id){const p=PMAP[id];if(!p)return;if(S.money<p.price){Snd.error();toast('Not enough money yet. You need '+fmt(p.price-S.money)+' more.','bad');return;}
+ S.money-=p.price;S.sup[id]=(S.sup[id]||0)+p.pack;save();Snd.buy();updateHUD();renderPanel();}
+function buyKnot(id){const k=KMAP[id];if(!k||S.knots.indexOf(id)>=0)return;if(S.money<k.price){Snd.error();toast('Not enough money yet. You need '+fmt(k.price-S.money)+' more.','bad');return;}
+ S.money-=k.price;S.knots.push(id);save();Snd.buy();toast('You learned the '+k.name+'. Pick it at the rig bench.','good',3200);updateHUD();renderPanel();}
+function pickKnot(id){if(S.knots.indexOf(id)<0||S.rig.knot===id)return;S.rig.knot=id;S.rig.tied=false;rigChanged();Snd.click();renderPanel();}
+function pct(x){return Math.round(x*100)+'%';}
+function rigBenchHTML(){const r=S.rig,m=rigMatch(r.parts),k=KMAP[r.knot];
+ let slots='';for(let i=0;i<RIG_SLOTS;i++){const id=r.parts[i];slots+=id?'<button class="slot on" data-act="rigrm" data-id="'+id+'" title="Take it off"><i style="background:'+PMAP[id].color+'"></i>'+esc(PMAP[id].name)+' ✕</button>':'<button class="slot add" data-act="rigjump">+ Add a part</button>';}
+ const spare=PARTS.filter(p=>S.sup[p.id]>0&&r.parts.indexOf(p.id)<0),full=r.parts.length>=RIG_SLOTS;
+ const quick='<div class="k" style="margin-top:10px">Your spare parts</div><div class="chips">'+(spare.length?spare.map(p=>'<button class="chip" data-act="rigadd" data-id="'+p.id+'" '+(full?'disabled':'')+'><i class="dot" style="background:'+p.color+'"></i> '+esc(p.name)+' <small>×'+S.sup[p.id]+' · tap to add</small></button>').join(''):'<span class="sub" style="font-size:13px">None yet. Buy a pack under Rig supplies just below, then tap it here to add it.</span>')+'</div>';
+ const name=m?m.name:r.parts.length?'Custom rig':'Bare hook';
+ const status=r.tied?'<span class="max">Tied on · '+esc(k.name)+' · '+pct(knotStrength())+' strong</span>':'<span class="warn">Not tied on yet</span>';
+ const knots=S.knots.map(id=>'<button class="chip'+(id===r.knot?' on':'')+'" data-act="knotpick" data-id="'+id+'">'+esc(KMAP[id].name)+' <small>up to '+pct(KMAP[id].max)+'</small></button>').join('');
+ return '<div class="bench"><div class="k">Rig bench</div><div class="n">'+esc(name)+'</div>'+
+  '<div class="d">'+(m?'A real rig! Bonus: '+esc(m.d)+'.':r.parts.length?'Mix parts to discover real rigs with bonus powers.':'Add parts from your supplies below to build a rig.')+'</div>'+
+  '<div class="rigline"><span class="end">Line</span>'+slots+'<span class="end">Hook</span></div>'+quick+
+  '<div class="k" style="margin-top:10px">Knot</div><div class="chips">'+knots+'</div>'+
+  '<div class="benchAct">'+status+'<button class="btn" data-act="tie">'+(r.tied?'Retie the knot':'Tie it on')+'</button></div></div>';}
+function suppliesHTML(){const r=S.rig;
+ let h='<h3 id="supList">Rig supplies</h3><p class="sub" style="font-size:13px">Parts you tie into a rig are lost if your line snaps, so keep spares.</p><div class="list">';
+ for(const p of PARTS){const inRig=r.parts.indexOf(p.id)>=0,n=S.sup[p.id]||0;
+  h+='<div class="row"><i class="dot" style="background:'+p.color+'"></i><div class="info"><b>'+esc(p.name)+'</b> <small>· you have '+n+(inRig?' + 1 on your rig':'')+'</small><br><small>'+esc(p.d)+'</small></div>'+
+   (inRig?'<button class="btn blue" data-act="rigrm" data-id="'+p.id+'">Take off</button>':'<button class="btn blue" data-act="rigadd" data-id="'+p.id+'" '+(n>0?'':'disabled')+'>Add to rig</button>')+
+   '<button class="btn" data-act="buypack" data-id="'+p.id+'" '+(S.money<p.price?'disabled':'')+'>'+p.pack+' for '+fmt(p.price)+'</button></div>';}
+ h+='</div><h3>Knot guides</h3><p class="sub" style="font-size:13px">Learn a knot once, then tie it yourself as often as you like. Harder knots hold more.</p><div class="list">';
+ for(const k of KNOTS){const own=S.knots.indexOf(k.id)>=0;
+  h+='<div class="row"><div class="info"><b>'+esc(k.name)+'</b> <small>· up to '+pct(k.max)+' strength · '+k.pts.length+' moves</small><br><small>'+esc(k.d)+'</small></div>'+
+   (own?'<span class="max">Learned</span>':'<button class="btn" data-act="buyknot" data-id="'+k.id+'" '+(S.money<k.price?'disabled':'')+'>Learn · '+fmt(k.price)+'</button>')+'</div>';}
+ return h+'</div>';}
+// ---------- tying the knot: lead the end of the line through each numbered point with your mouse ----------
+const KN={on:false,knot:null,i:0,path:[],len:0,started:false,phase:'trace',pull:0,pulling:false,t:0,q:0,k:0,cur:{x:60,y:300}};
+const knV=$('knotView'),knC=$('knCanvas'),knX=knC.getContext('2d'),KN_A=[44,210],KN_START=[110,300];
+function openKnot(){
+ if(G.state!=='idle')return;closePanel();const k=KMAP[S.rig.knot]||KNOTS[0];
+ Object.assign(KN,{on:true,knot:k,i:0,path:[],len:0,started:false,phase:'trace',pull:0,pulling:false,t:0,q:0,k:0,cur:{x:KN_START[0],y:KN_START[1]}});
+ $('knTitle').textContent='Tie the '+k.name.toLowerCase();knV.classList.remove('hidden');knotUI();Snd.click();requestAnimationFrame(knotLoop);}
+function closeKnot(){KN.on=false;knV.classList.add('hidden');}
+function knotUI(){const k=KN.knot;let h,b='';
+ if(KN.phase==='trace')h=!KN.started?(touchish?'Touch':'Move your mouse to')+' the glowing end of the line to pick it up.':'Lead the line through point '+(KN.i+1)+' of '+k.pts.length+'. Neat, short moves make a stronger knot.';
+ else if(KN.phase==='pull')h=(touchish?'Press and hold':'Hold the mouse button')+' to pull the knot tight. Let go while the bar is in the green.';
+ else{const s=KN.k,word=KN.q>0.85?'Rock solid':KN.q>0.6?'A good knot':KN.q>0.35?'A bit sloppy':'It might slip';
+  h=word+': '+pct(s)+' strength'+(S.rig.parts.indexOf('bead')>=0?' (your bead adds 6% more)':'')+'. A perfect '+k.name.toLowerCase()+' is '+pct(k.max)+'.';
+  b='<button class="btn blue" data-kn="again">Tie it again</button><button class="btn" data-kn="use">Fish with it</button>';}
+ $('knHint').textContent=h;$('knBtns').innerHTML=b;}
+function knotPt(e){const r=knC.getBoundingClientRect();return {x:(e.clientX-r.left)*knC.width/r.width,y:(e.clientY-r.top)*knC.height/r.height};}
+function knotMove(p){
+ KN.cur=p;if(KN.phase!=='trace')return;
+ if(!KN.started){if(Math.hypot(p.x-KN_START[0],p.y-KN_START[1])<30){KN.started=true;KN.path=[{x:KN_START[0],y:KN_START[1]}];Snd.click();knotUI();}return;}
+ const last=KN.path[KN.path.length-1],d=Math.hypot(p.x-last.x,p.y-last.y);if(d<5)return;KN.path.push({x:p.x,y:p.y});KN.len+=d;
+ const w=KN.knot.pts[KN.i];if(Math.hypot(p.x-w[0],p.y-w[1])<(touchish?30:22)){KN.i++;Snd.tick();
+  if(KN.i>=KN.knot.pts.length){KN.phase='pull';KN.pull=0;Snd.buy();}knotUI();}}
+function knotFinish(){const k=KN.knot;let ideal=Math.hypot(k.pts[0][0]-KN_START[0],k.pts[0][1]-KN_START[1]);for(let i=1;i<k.pts.length;i++)ideal+=Math.hypot(k.pts[i][0]-k.pts[i-1][0],k.pts[i][1]-k.pts[i-1][1]);
+ const qPath=clamp((ideal/Math.max(1,KN.len)-0.45)/0.45,0,1),p=KN.pull,qPull=p<0.72?p/0.72:p<=0.9?1:Math.max(0,1-(p-0.9)/0.3);
+ KN.q=0.6*qPath+0.4*qPull;KN.k=k.max*(0.5+0.5*KN.q);KN.phase='done';if(KN.q>0.6)Snd.catch();else Snd.click();knotUI();}
+knC.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||KN.down)knotMove(knotPt(e));});
+knC.addEventListener('pointerdown',e=>{e.preventDefault();KN.down=true;try{knC.setPointerCapture(e.pointerId);}catch(_){}Snd.get();knotMove(knotPt(e));if(KN.phase==='pull'){KN.pulling=true;}});
+const knUp=()=>{KN.down=false;if(KN.phase==='pull'&&KN.pulling){KN.pulling=false;if(KN.pull>0.12)knotFinish();else KN.pull=0;}};
+knC.addEventListener('pointerup',knUp);knC.addEventListener('pointercancel',knUp);
+$('knBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.kn==='again'){Object.assign(KN,{i:0,path:[],len:0,started:false,phase:'trace',pull:0,pulling:false});knotUI();Snd.click();}
+ else if(b.dataset.kn==='use'){S.rig.k=KN.k;S.rig.tied=true;rigChanged();closeKnot();toast('Knot tied: '+pct(knotStrength())+' strong. Go fishing!','good',2800);}});
+$('knClose').addEventListener('click',closeKnot);
+function drawPart(x,id,px,py){const p=PMAP[id];x.fillStyle=p.color;x.strokeStyle='rgba(0,0,0,0.45)';x.lineWidth=1.5;
+ if(id==='leader'||id==='wire'){x.strokeStyle=p.color;x.lineWidth=5;x.beginPath();x.moveTo(px-26,py);x.lineTo(px+26,py);x.stroke();}
+ else if(id==='swivel'){x.beginPath();x.ellipse(px,py,11,5,0,0,7);x.fill();x.stroke();x.beginPath();x.arc(px-14,py,4,0,7);x.arc(px+14,py,4,0,7);x.stroke();}
+ else if(id==='blade'){x.beginPath();x.ellipse(px,py+10,7,14,0.3,0,7);x.fill();x.stroke();}
+ else if(id==='rattle'){rr(x,px-13,py-6,26,12,6);x.fill();x.stroke();}
+ else if(id==='stinger'){x.strokeStyle=p.color;x.lineWidth=2.5;x.beginPath();x.moveTo(px,py);x.lineTo(px,py+16);x.arc(px-6,py+16,6,0,Math.PI);x.stroke();}
+ else{x.beginPath();x.arc(px,py,id==='shot'?8:6,0,7);x.fill();x.stroke();}}
+function drawKnot(){
+ const x=knX,w=knC.width,h=knC.height,k=KN.knot,T=KN.t,E=k.pts[0];
+ const bg=x.createLinearGradient(0,0,0,h);bg.addColorStop(0,'#1d262d');bg.addColorStop(1,'#141b21');x.fillStyle=bg;x.fillRect(0,0,w,h);
+ x.strokeStyle='rgba(255,255,255,0.035)';x.lineWidth=1;for(let i=40;i<w;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,h);x.stroke();}for(let i=30;i<h;i+=40){x.beginPath();x.moveTo(0,i);x.lineTo(w,i);x.stroke();}
+ // the hook: its eye is point 1
+ x.strokeStyle='#b9c2c8';x.lineWidth=7;x.lineCap='round';x.lineJoin='round';x.beginPath();x.moveTo(E[0]+13,E[1]+5);x.lineTo(E[0]+96,E[1]+62);x.arc(E[0]+70,E[1]+96,42,-0.92,2.2);x.stroke();
+ x.lineWidth=4;x.beginPath();x.arc(E[0],E[1],13,0,7);x.stroke();
+ const tip=[E[0]+70+Math.cos(2.2)*42,E[1]+96+Math.sin(2.2)*42];x.lineWidth=5;x.beginPath();x.moveTo(tip[0],tip[1]);x.lineTo(tip[0]+4,tip[1]-30);x.moveTo(tip[0]+3,tip[1]-18);x.lineTo(tip[0]+14,tip[1]-10);x.stroke();
+ // your line coming from the rod, with the rig parts threaded on it
+ x.strokeStyle='rgba(235,240,240,0.55)';x.lineWidth=3;x.beginPath();x.moveTo(0,KN_A[1]);x.lineTo(KN_A[0],KN_A[1]);x.quadraticCurveTo(70,KN_A[1]+60,KN_START[0],KN_START[1]);x.stroke();
+ x.setLineDash([4,7]);x.strokeStyle='rgba(235,240,240,0.16)';x.beginPath();x.moveTo(KN_A[0],KN_A[1]);x.lineTo(E[0]-14,E[1]);x.stroke();x.setLineDash([]);
+ S.rig.parts.forEach((id,i)=>drawPart(x,id,170+i*70,KN_A[1]));
+ if(S.rig.parts.length){x.font='600 13px Barlow, sans-serif';x.fillStyle='rgba(232,238,241,0.6)';x.textAlign='left';x.textBaseline='middle';x.fillText('On this rig:',16,26);S.rig.parts.forEach((id,i)=>{x.fillStyle=PMAP[id].color;x.beginPath();x.arc(110+i*120,26,6,0,7);x.fill();x.fillStyle='rgba(232,238,241,0.8)';x.fillText(PMAP[id].name,122+i*120,26);});}
+ // the numbered points
+ x.textAlign='center';x.textBaseline='middle';x.font='700 14px Barlow, sans-serif';
+ if(KN.phase==='trace')k.pts.forEach((p,i)=>{if(i<KN.i){x.fillStyle='rgba(92,201,138,0.75)';x.beginPath();x.arc(p[0],p[1],5,0,7);x.fill();return;}
+  const next=i===KN.i&&KN.started;if(next){x.strokeStyle='#ff8a1f';x.lineWidth=3;x.beginPath();x.arc(p[0],p[1],17+Math.sin(T*7)*3,0,7);x.stroke();x.fillStyle='#ff8a1f';}else x.fillStyle='rgba(232,238,241,'+(i===KN.i+1?0.5:0.22)+')';
+  x.fillText(String(i+1),p[0],p[1]+(i===0?-28:0)+(next&&i>0?0:0));});
+ // the line you have laid so far (it tightens toward the hook eye as you pull)
+ const P=KN.path,sq=KN.phase==='trace'?0:KN.phase==='pull'?KN.pull*0.75:0.78;
+ if(P.length){const pt=q=>[lerp(q.x,E[0]-16,sq),lerp(q.y,E[1],sq)];
+  for(const pass of [0,1]){x.strokeStyle=pass?'#f1e9d2':'rgba(0,0,0,0.5)';x.lineWidth=pass?3:6;x.beginPath();x.moveTo(KN_START[0],KN_START[1]);if(sq>0)x.lineTo(...pt(P[0]));for(const q of P){const a=pt(q);x.lineTo(a[0],a[1]);}
+   if(KN.phase==='trace'&&KN.started)x.lineTo(KN.cur.x,KN.cur.y);x.stroke();}}
+ if(KN.phase==='trace'){const c=KN.started?KN.cur:{x:KN_START[0],y:KN_START[1]};x.fillStyle='#fff';x.beginPath();x.arc(c.x,c.y,KN.started?4:7+Math.sin(T*6)*2,0,7);x.fill();
+  if(!KN.started){x.strokeStyle='#ff8a1f';x.lineWidth=3;x.beginPath();x.arc(c.x,c.y,18+Math.sin(T*6)*3,0,7);x.stroke();}}
+ if(KN.phase==='pull'||KN.phase==='done'){const bx=w/2-170,by=h-46,bw=340;x.fillStyle='rgba(8,14,20,0.8)';rr(x,bx-10,by-12,bw+20,34,10);x.fill();
+  const g=x.createLinearGradient(bx,0,bx+bw,0);g.addColorStop(0,'#4a6f8a');g.addColorStop(0.58,'#4a6f8a');g.addColorStop(0.6,'#4f9a6d');g.addColorStop(0.75,'#4f9a6d');g.addColorStop(0.77,'#c9483b');g.addColorStop(1,'#9b2a22');
+  x.fillStyle=g;rr(x,bx,by,bw,10,5);x.fill();const mx=bx+bw*clamp(KN.pull/1.2,0,1);x.fillStyle='#fff';x.fillRect(mx-2,by-6,4,22);}
+}
+let knLast=0;
+function knotLoop(now){if(!KN.on)return;const dt=Math.min(0.05,(now-(knLast||now))/1000);knLast=now;KN.t+=dt;
+ if(KN.phase==='pull'&&KN.pulling){KN.pull=Math.min(1.2,KN.pull+dt*0.75);if(KN.pull>=1.2){KN.pulling=false;knotFinish();}}
+ drawKnot();requestAnimationFrame(knotLoop);}
 // ---------- input ----------
 function localPt(e){const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
 canvas.addEventListener('pointerdown',e=>{if(e.button&&e.button!==0)return;e.preventDefault();const p=localPt(e),wp={x:p.x+CAM.x,y:p.y+CAM.y};G.ptrDown=true;
@@ -1917,6 +2123,7 @@ const DIRS={ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'r
 window.addEventListener('keydown',e=>{
  const k=e.key;
  if(!$('catchCard').classList.contains('hidden')){if(ACT_KEYS.indexOf(k)>=0||k==='Escape'){e.preventDefault();if(!e.repeat&&performance.now()-G.cardT>450)closeCatchCard();}return;}
+ if(!knV.classList.contains('hidden')){if(k==='Escape')closeKnot();return;}
  if(!modal.classList.contains('hidden')){if(k==='Escape')closePanel();return;}
  if(ACT_KEYS.indexOf(k)>=0){e.preventDefault();if(e.repeat)return;G.holding=true;actionPress();}
  else if(DIRS[k]){e.preventDefault();G.keys[DIRS[k]]=true;if(DIRS[k]==='up'&&G.state==='reeling')G.holding=true;}
@@ -1940,7 +2147,7 @@ layout();rollWeather(false);initAmbient();updateHUD();checkRotate();CAM.x=clamp(
 if(!S.seenHelp)openPanel('help');
 requestAnimationFrame(loop);
 // tiny hook for automated testing (harmless for players)
-window.__fishing={get S(){return S;},get G(){return G;},get Lay(){return Lay;},FISH,LOCS,RODS,BUCKETS,LURES,KEY,WX,CAM,TER,rollWeather,landGeom,tryGrab,hookFish,spawnFish,initAmbient,step(dt){G.time+=dt;update(dt);},render(){draw();updateUI();}};
+window.__fishing={get S(){return S;},get G(){return G;},get Lay(){return Lay;},FISH,LOCS,RODS,BUCKETS,LURES,KEY,WX,CAM,TER,rollWeather,landGeom,tryGrab,hookFish,spawnFish,openKnot,KN,knotMove,knotFinish,rigFx,snapK,initAmbient,step(dt){G.time+=dt;update(dt);},render(){draw();updateUI();}};
 </script>
 </body>
 </html>
